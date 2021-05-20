@@ -1,4 +1,6 @@
-import { Mongoose, Schema } from "mongoose";
+import Mongoose from "mongoose";
+
+const { Schema } = Mongoose;
 
 const reviewSchema = Schema(
 	{
