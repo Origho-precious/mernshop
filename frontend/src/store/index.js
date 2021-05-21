@@ -16,6 +16,7 @@ import {
 import storage from "reduxjs-toolkit-persist/lib/storage";
 import autoMergeLevel1 from "reduxjs-toolkit-persist/lib/stateReconciler/autoMergeLevel1";
 import authSlice from "./slices/auth.slice";
+import productsSlice from './slices/products.slice';
 
 const persistConfig = {
 	key: "proshop",
@@ -25,6 +26,7 @@ const persistConfig = {
 
 const reducers = combineReducers({
 	auth: authSlice,
+	productList: productsSlice
 });
 
 const _persistedReducer = persistReducer(persistConfig, reducers);
