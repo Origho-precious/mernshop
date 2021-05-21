@@ -14,20 +14,18 @@ const productSlice = createSlice({
 		},
 		setProductDetailsSuccess: (state, { payload }) => {
 			state.loading = false;
+			state.error = null;
 			state.product = payload;
 		},
 		setProductDetailsFailed: (state, { payload }) => {
 			state.loading = false;
-			state.product.error = payload;
+			state.error = payload;
 		},
 	},
 });
 
-const {
-	setIsLoading,
-	setProductDetailsFailed,
-	setProductDetailsSuccess,
-} = productSlice.actions;
+const { setIsLoading, setProductDetailsFailed, setProductDetailsSuccess } =
+	productSlice.actions;
 
 export const getProductDetails = (id) => async (dispatch) => {
 	try {

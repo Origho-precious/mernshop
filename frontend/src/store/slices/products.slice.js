@@ -12,6 +12,7 @@ const productsSlice = createSlice({
 		},
 		setProductListSuccess: (state, { payload }) => {
 			state.loading = false;
+			state.error = null;
 			state.products = payload;
 		},
 		setProductListFail: (state, { payload }) => {

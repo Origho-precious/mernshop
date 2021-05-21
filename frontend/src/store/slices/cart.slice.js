@@ -1,6 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
-// import axios from "axios";
 
 const cartSlice = createSlice({
 	name: "cart",
@@ -9,16 +8,25 @@ const cartSlice = createSlice({
 	},
 	reducers: {
 		setCart: (state, { payload }) => {
-			state.cart = payload;
+			state.cartItems = payload;
 		},
 	},
 });
 
 const { setCart } = cartSlice.actions;
 
-export const addToCart = (id, getState) => async (dispatch) => {
+export const addToCart = (id, qty) => async (dispatch, getState) => {
 	try {
-		const { newProduct } = await axios.get(`/api/products/${id}`);
+		const { data } = await axios.get(`/api/products/${id}`);
+
+		const newProduct = {
+			id: data._id,
+			name: data.name,
+			image: data.image,
+			price: data.price,
+			countInStock: data.countInStock,
+			qty,
+		};
 
 		const previousState = getState()?.cartReducer?.cartItems;
 		const existingItem = previousState.find(
@@ -29,18 +37,17 @@ export const addToCart = (id, getState) => async (dispatch) => {
 			const existingItemId = previousState.findIndex(
 				(item) => item.id === newProduct.id
 			);
+			
+			const state = [...previousState]
+			state.splice(existingItemId, 1, newProduct)
 
-			dispatch(
-				setCart([
-					...previousState,
-					(previousState[existingItemId] = newProduct),
-				])
-			);
+			dispatch(setCart([...state]));
 		} else {
-			dispatch(setCart(...previousState, newProduct));
+			dispatch(setCart([...previousState, newProduct]));
 		}
 	} catch (error) {
-		dispatch(setCart(getState().cart));
+		dispatch(setCart(getState()?.cartReducer?.cartItems));
+		console.log(error);
 	}
 };
 
