@@ -1,21 +1,43 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { Row, Col, Image, ListGroup, Card, Button } from "react-bootstrap";
+import {
+	Row,
+	Col,
+	Image,
+	ListGroup,
+	Card,
+	Button,
+	Form,
+} from "react-bootstrap";
 import Rating from "../../components/Rating/Rating";
 import { getProductDetails } from "../../store/slices/product.slice";
 import Loader from "../../components/Loader/Loader";
 import Message from "../../components/Message/Message";
 
-const ProductScreen = ({ match }) => {
+const Productpage = ({ match, history }) => {
 	const dispatch = useDispatch();
 	const { loading, product, error } = useSelector(
 		(state) => state.productReducer
 	);
+	const [qty, setQty] = useState(1);
 
 	useEffect(() => {
 		dispatch(getProductDetails(match?.params?.id));
 	}, [dispatch, match]);
+
+	const addToCart = () => {
+		history.push(`/cart/${match?.params?.id}?qty=${qty}`);
+	};
+
+	const qtyOptions = (count) => {
+		let options = [];
+		for (let i = 1; i <= count; i++) {
+			options.push(i);
+		}
+
+		return options;
+	};
 
 	return (
 		<>
@@ -67,8 +89,31 @@ const ProductScreen = ({ match }) => {
 										</Col>
 									</Row>
 								</ListGroup.Item>
+								{product?.countInStock > 0 && (
+									<ListGroup.Item>
+										<Row>
+											<Col>Qty</Col>
+											<Col>
+												<Form.Control
+													as="select"
+													value={qty}
+													onChange={(e) => setQty(e.target.value)}
+												>
+													{qtyOptions(product?.countInStock)?.map(
+														(option, id) => (
+															<option key={id} value={option}>
+																{option}
+															</option>
+														)
+													)}
+												</Form.Control>
+											</Col>
+										</Row>
+									</ListGroup.Item>
+								)}
 								<ListGroup.Item>
 									<Button
+										onClick={addToCart}
 										disabled={product?.countInStock > 0}
 										type="button"
 										className="btn-block"
@@ -85,4 +130,4 @@ const ProductScreen = ({ match }) => {
 	);
 };
 
-export default ProductScreen;
+export default Productpage;
