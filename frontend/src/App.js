@@ -3,7 +3,8 @@ import { BrowserRouter, Route, Switch } from "react-router-dom";
 import Header from "./components/Header/Header";
 import Footer from "./components/Footer/Footer";
 import Homepage from "./pages/Homepage";
-import Productpage from "./pages/Productpage";
+import ProductDetails from "./pages/ProductDetails";
+import Cart from "./pages/Cart";
 
 const App = () => {
 	return (
@@ -13,7 +14,8 @@ const App = () => {
 				<Container>
 					<Switch>
 						<Route exact path="/" component={Homepage} />
-						<Route exact path="/product/:id" component={Productpage} />
+						<Route exact path="/product/:id" component={ProductDetails} />
+						<Route exact path="/cart/:id" component={Cart} />
 					</Switch>
 				</Container>
 			</main>
