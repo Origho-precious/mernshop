@@ -3,7 +3,7 @@ import User from "../models/user.model.js";
 import generateToken from "../utils/generateToken.js";
 
 // @desc Auth user & get token
-// @route POST /api/users/;pgin
+// @route POST /api/users/login
 // @access Public
 export const authUser = asyncHandler(async (req, res) => {
 	const { email, password } = req.body;
@@ -21,5 +21,19 @@ export const authUser = asyncHandler(async (req, res) => {
 	} else {
 		res.status(401);
 		throw new Error("Invalid email or password");
+	}
+});
+
+// @desc Get user profile
+// @route GET /api/users/profile
+// @access Public
+export const getUserProfile = asyncHandler(async (req, res) => {
+	const user = await User.findById(req.user._id).select(["-password", "-__v"]);
+
+	if (user) {
+		res.json(user);
+	} else {
+		res.status(404);
+		throw new Error("User not found");
 	}
 });
