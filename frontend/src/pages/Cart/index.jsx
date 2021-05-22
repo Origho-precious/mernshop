@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { addToCart } from "../../store/slices/cart.slice";
+import { addToCart, removeFromCart } from "../../store/slices/cart.slice";
 import {
 	Row,
 	Col,
@@ -72,7 +72,11 @@ const Cart = ({ match, location, history }) => {
 										</Form.Control>
 									</Col>
 									<Col md={2}>
-										<Button onClick={() => {}} type="button" variant="light">
+										<Button
+											onClick={() => dispatch(removeFromCart(item?.id))}
+											type="button"
+											variant="light"
+										>
 											<i className="fas fa-trash" />
 										</Button>
 									</Col>

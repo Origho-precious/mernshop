@@ -37,9 +37,9 @@ export const addToCart = (id, qty) => async (dispatch, getState) => {
 			const existingItemId = previousState.findIndex(
 				(item) => item.id === newProduct.id
 			);
-			
-			const state = [...previousState]
-			state.splice(existingItemId, 1, newProduct)
+
+			const state = [...previousState];
+			state.splice(existingItemId, 1, newProduct);
 
 			dispatch(setCart([...state]));
 		} else {
@@ -49,6 +49,16 @@ export const addToCart = (id, qty) => async (dispatch, getState) => {
 		dispatch(setCart(getState()?.cartReducer?.cartItems));
 		console.log(error);
 	}
+};
+
+export const removeFromCart = (id) => async (dispatch, getState) => {
+	const previousState = [...getState()?.cartReducer?.cartItems];
+
+	const index = previousState.findIndex((item) => item.id === id);
+
+	previousState.splice(index, 1);
+
+	dispatch(setCart(previousState));
 };
 
 export default cartSlice.reducer;
