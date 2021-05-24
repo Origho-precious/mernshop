@@ -28,18 +28,16 @@ const authSlice = createSlice({
 			state.profile = payload;
 		},
 		setLogout: (state) => {
-			state = {
-				authenticated: false,
-				loading: false,
-				userInfo: null,
-				loginError: null,
-			};
+			state.authenticated = false;
+			state.loading = false;
+			state.userInfo = null;
+			state.loginError = null;
 		},
 	},
 });
 
 const {
-	setUserProfile,
+	// setUserProfile,
 	setAuthenticating,
 	setLoginFailed,
 	setLoginSuccess,
@@ -70,6 +68,10 @@ export const login = (email, password) => async (dispatch) => {
 			)
 		);
 	}
+};
+
+export const logout = () => (dispatch) => {
+	dispatch(setLogout());
 };
 
 export default authSlice.reducer;

@@ -10,15 +10,15 @@ import FormContainer from "../../components/FormContainer/FormContainer";
 const Loginpage = ({ location, history }) => {
 	const redirect = location?.search ? location.search.split("=")[1] : "/";
 	const dispatch = useDispatch();
-	const { userInfo, loading, loginError } = useSelector(
+	const { authenticated, loading, loginError } = useSelector(
 		(state) => state.authReducer
 	);
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 
 	useEffect(() => {
-		userInfo && history.push(redirect);
-	}, [history, redirect, userInfo]);
+		authenticated && history.push(redirect);
+	}, [history, redirect, authenticated]);
 
 	const handleSubmit = (e) => {
 		e.preventDefault();
