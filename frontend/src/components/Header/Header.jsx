@@ -23,7 +23,7 @@ const Header = () => {
 								</Nav.Link>
 							</LinkContainer>
 							{authenticated ? (
-								<NavDropdown title={userInfo.name} id="username">
+								<NavDropdown title={userInfo?.name} id="username">
 									<LinkContainer to="/profile">
 										<NavDropdown.Item>Profile</NavDropdown.Item>
 									</LinkContainer>

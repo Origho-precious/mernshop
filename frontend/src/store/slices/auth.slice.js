@@ -8,6 +8,7 @@ const authSlice = createSlice({
 		loading: false,
 		userInfo: null,
 		loginError: null,
+		signupError: null,
 	},
 	reducers: {
 		setAuthenticating: (state) => {
@@ -33,6 +34,15 @@ const authSlice = createSlice({
 			state.userInfo = null;
 			state.loginError = null;
 		},
+		setSignupSuccess: (state) => {
+			state.authenticated = true;
+			state.loading = false;
+			state.signupError = null;
+		},
+		setSignupFailed: (state, { payload }) => {
+			state.loading = false;
+			state.signupError = payload;
+		},
 	},
 });
 
@@ -42,6 +52,8 @@ const {
 	setLoginFailed,
 	setLoginSuccess,
 	setLogout,
+	setSignupFailed,
+	setSignupSuccess,
 } = authSlice.actions;
 
 export const login = (email, password) => async (dispatch) => {
@@ -72,6 +84,37 @@ export const login = (email, password) => async (dispatch) => {
 
 export const logout = () => (dispatch) => {
 	dispatch(setLogout());
+};
+
+export const register = (name, email, password) => async (dispatch) => {
+	if (name && email && password) {
+		try {
+			dispatch(setAuthenticating(true));
+
+			const reqBody = JSON.stringify({ name, email, password });
+			const config = {
+				headers: {
+					"Content-Type": "application/json",
+				},
+			};
+
+			const { data } = await axios.post("/api/users", reqBody, config);
+
+			data && dispatch(setSignupSuccess());
+			data && dispatch(login(email, password));
+		} catch (error) {
+			console.error(error);
+			dispatch(
+				setSignupFailed(
+					error?.response?.data?.message
+						? error.response.data.message
+						: error.message
+				)
+			);
+		}
+	} else {
+		dispatch(setSignupFailed("Please fill all fields!"));
+	}
 };
 
 export default authSlice.reducer;
