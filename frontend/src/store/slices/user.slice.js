@@ -8,6 +8,7 @@ const userSlice = createSlice({
 		profile: null,
 		updateProfileError: null,
 		profileError: null,
+		updateSuccess: false,
 	},
 	reducers: {
 		setLoading: (state, { payload }) => {
@@ -25,10 +26,12 @@ const userSlice = createSlice({
 		setUpdateProfileSuccess: (state, { payload }) => {
 			state.loading = false;
 			state.profile = payload;
+			state.updateSuccess = true;
 			state.updateProfileError = null;
 		},
 		setUpdateProfileFailed: (state, { payload }) => {
 			state.loading = false;
+			state.updateSuccess = false;
 			state.updateProfileError = payload;
 		},
 	},
