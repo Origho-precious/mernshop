@@ -32,6 +32,6 @@ export const createOrder = asyncHandler(async (req, res) => {
 
 		const newOrder = await order.save();
 
-		res.status(201).json(newOrder);
+		res.status(201).json(newOrder._id);
 	}
 });
