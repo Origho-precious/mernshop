@@ -1,5 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
+import { clearState } from "./user.slice.js";
 
 const authSlice = createSlice({
 	name: "auth",
@@ -83,6 +84,7 @@ export const login = (email, password) => async (dispatch) => {
 };
 
 export const logout = () => (dispatch) => {
+	dispatch(clearState(null));
 	dispatch(setLogout());
 };
 

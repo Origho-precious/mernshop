@@ -7,6 +7,7 @@ import ProductDetails from "./pages/ProductDetails";
 import Cart from "./pages/Cart";
 import Loginpage from "./pages/Loginpage";
 import Signuppage from "./pages/Signuppage";
+import Profile from "./pages/Profile";
 
 const App = () => {
 	return (
@@ -21,6 +22,7 @@ const App = () => {
 						<Route exact path="/cart/:id" component={Cart} />
 						<Route exact path="/login" component={Loginpage} />
 						<Route exact path="/register" component={Signuppage} />
+						<Route exact path="/profile" component={Profile} />
 					</Switch>
 				</Container>
 			</main>
