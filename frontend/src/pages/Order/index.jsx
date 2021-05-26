@@ -1,43 +1,53 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { Row, Col, ListGroup, Image, Card, Button } from "react-bootstrap";
 import Message from "../../components/Message/Message";
 import Loader from "../../components/Loader/Loader";
 import CheckoutSteps from "../../components/CheckoutSteps/CheckoutSteps";
+import { createOrder } from "../../store/slices/order.slice";
 
 const Orders = ({ history }) => {
 	const dispatch = useDispatch();
 	const {
 		cartReducer: { shippingAddress, paymentMethod, cartItems },
 		authReducer: { authenticated },
+		orderReducer: { order, success, failed, loading },
 	} = useSelector((state) => state);
 
 	useEffect(() => {
 		!authenticated && history.push("/login");
 		!paymentMethod && history.push("/payment");
-  }, [authenticated, history, paymentMethod]);
-  
-  const addDecimal = (num) => {
-    return (Math.round(num * 100) / 100).toFixed(2)
-  }
+	}, [authenticated, history, paymentMethod]);
 
 	let cartPrice = cartItems
 		.map((item) => item.price * item.qty)
 		.reduce((acc, curPrice) => acc + curPrice);
 
-	addDecimal(Number(cartPrice));
+	Number(cartPrice).toFixed(2);
 
-	const shippingPrice = addDecimal(cartPrice > 100 ? 0 : 100);
+	const shippingPrice = cartPrice > 100 ? 0 : 100;
 
-	const taxPrice = addDecimal(Number((0.15 * cartPrice).toFixed(2)));
+	const taxPrice = Number((0.15 * cartPrice).toFixed(2));
 
-	const totalPrice = addDecimal(
-		Number(cartPrice + shippingPrice + taxPrice).toFixed(2)
-	);
+	const totalPrice = Number(cartPrice + shippingPrice + taxPrice).toFixed(2);
+
+	useEffect(() => {
+		success && history.push(`/order/${order._id}`);
+	}, [success, order, history]);
 
 	const placeOrder = () => {
-		console.log(111222333);
+		dispatch(
+			createOrder({
+				orderItems: cartItems,
+				shippingAddress,
+				paymentMethod,
+				itemsPrice: cartPrice,
+				shippingPrice,
+				taxPrice,
+				totalPrice,
+			})
+		);
 	};
 
 	return (
@@ -124,6 +134,10 @@ const Orders = ({ history }) => {
 									<Col>Total</Col>
 									<Col>${totalPrice}</Col>
 								</Row>
+							</ListGroup.Item>
+							<ListGroup.Item>
+								{loading && <Loader />}
+								{failed && <Message variant="danger">{failed}</Message>}
 							</ListGroup.Item>
 							<ListGroup.Item>
 								<Button

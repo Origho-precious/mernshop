@@ -20,6 +20,7 @@ import productsSlice from "./slices/products.slice";
 import productSlice from "./slices/product.slice";
 import cartSlice from "./slices/cart.slice";
 import userSlice from "./slices/user.slice.js";
+import orderSlice from "./slices/order.slice";
 
 const persistConfig = {
 	key: "proshop",
@@ -32,7 +33,8 @@ const reducers = combineReducers({
 	productListReducer: productsSlice,
 	productReducer: productSlice,
 	cartReducer: cartSlice,
-	userReducer: userSlice
+	userReducer: userSlice,
+	orderReducer: orderSlice,
 });
 
 const _persistedReducer = persistReducer(persistConfig, reducers);
