@@ -8,8 +8,13 @@ import { fetchProfile, updateProfile } from "../../store/slices/user.slice";
 
 const Profile = ({ history }) => {
 	const dispatch = useDispatch();
-	const { userProfileError, loading, profile, updateProfileError } =
-		useSelector((state) => state.userReducer);
+	const {
+		userProfileError,
+		updateSuccess,
+		loading,
+		profile,
+		updateProfileError,
+	} = useSelector((state) => state.userReducer);
 	const { authenticated } = useSelector((state) => state.authReducer);
 
 	const [name, setName] = useState(profile?.name || "");
@@ -40,6 +45,7 @@ const Profile = ({ history }) => {
 			<Col md={3}>
 				<h2>User Profile</h2>
 				{loading && <Loader />}
+				{updateSuccess && <Message variant="success">Profile Updated</Message>}
 				{updateProfileError && (
 					<Message variant="danger">{updateProfileError}</Message>
 				)}
@@ -88,6 +94,9 @@ const Profile = ({ history }) => {
 						Update
 					</Button>
 				</Form>
+			</Col>
+			<Col>
+					
 			</Col>
 		</Row>
 	);

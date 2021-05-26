@@ -8,6 +8,7 @@ import Cart from "./pages/Cart";
 import Loginpage from "./pages/Loginpage";
 import Signuppage from "./pages/Signuppage";
 import Profile from "./pages/Profile";
+import Shipping from "./pages/Shipping";
 
 const App = () => {
 	return (
@@ -23,6 +24,7 @@ const App = () => {
 						<Route exact path="/login" component={Loginpage} />
 						<Route exact path="/register" component={Signuppage} />
 						<Route exact path="/profile" component={Profile} />
+						<Route exact path="/shipping" component={Shipping} />
 					</Switch>
 				</Container>
 			</main>
