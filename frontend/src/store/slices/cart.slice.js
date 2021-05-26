@@ -6,6 +6,7 @@ const cartSlice = createSlice({
 	initialState: {
 		cartItems: [],
 		shippingAddress: {},
+		paymentMethod: null,
 	},
 	reducers: {
 		setCart: (state, { payload }) => {
@@ -14,10 +15,13 @@ const cartSlice = createSlice({
 		setShippingAddress: (state, { payload }) => {
 			state.shippingAddress = payload;
 		},
+		setPaymentMethod: (state, { payload }) => {
+			state.paymentMethod = payload;
+		},
 	},
 });
 
-const { setCart, setShippingAddress } = cartSlice.actions;
+const { setCart, setShippingAddress, setPaymentMethod } = cartSlice.actions;
 
 export const addToCart = (id, qty) => async (dispatch, getState) => {
 	try {
@@ -67,6 +71,10 @@ export const removeFromCart = (id) => async (dispatch, getState) => {
 
 export const saveShippingAddress = (data) => (dispatch) => {
 	dispatch(setShippingAddress(data));
+};
+
+export const savePaymentMethod = (method) => (dispatch) => {
+	dispatch(setPaymentMethod(method));
 };
 
 export default cartSlice.reducer;
