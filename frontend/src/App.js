@@ -10,6 +10,7 @@ import Signuppage from "./pages/Signuppage";
 import Profile from "./pages/Profile";
 import Shipping from "./pages/Shipping";
 import Payment from "./pages/Payment";
+import Order from "./pages/Order";
 
 const App = () => {
 	return (
@@ -26,7 +27,8 @@ const App = () => {
 						<Route exact path="/register" component={Signuppage} />
 						<Route exact path="/profile" component={Profile} />
 						<Route exact path="/shipping" component={Shipping} />
-						<Route exact path="/Payment" component={Payment} />
+						<Route exact path="/payment" component={Payment} />
+						<Route exact path="/order" component={Order} />
 					</Switch>
 				</Container>
 			</main>
