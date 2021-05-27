@@ -6,8 +6,9 @@ const orderSlice = createSlice({
 	initialState: {
 		loading: false,
 		success: false,
-		order: null,
+		orderId: null,
 		failed: false,
+		order: null,
 	},
 	reducers: {
 		setLoading: (state) => {
@@ -17,18 +18,22 @@ const orderSlice = createSlice({
 			state.loading = false;
 			state.success = true;
 			state.failed = false;
-			state.order = payload;
+			state.orderId = payload;
 		},
 		setOrderFailed: (state, { payload }) => {
 			state.loading = false;
 			state.success = false;
 			state.failed = payload;
-			state.order = null;
+			state.orderId = null;
+		},
+		setOrderDetails: (state, { payload }) => {
+			state.order = payload;
 		},
 	},
 });
 
-const { setOrderSuccess, setOrderFailed, setLoading } = orderSlice.actions;
+const { setOrderSuccess, setOrderFailed, setLoading, setOrderDetails } =
+	orderSlice.actions;
 
 export const createOrder = (order) => async (dispatch, getState) => {
 	const token = getState().authReducer.userInfo.token;
@@ -72,6 +77,27 @@ export const createOrder = (order) => async (dispatch, getState) => {
 					: error.message
 			)
 		);
+	}
+};
+
+export const getOrder = (id) => async (dispatch, getState) => {
+	const token = getState().authReducer.userInfo.token;
+
+	try {
+		dispatch(setLoading(true));
+
+		const config = {
+			headers: {
+				"Content-Type": "application/json",
+				Authorization: `Bearer ${token}`,
+			},
+		};
+
+		const { data } = await axios.get(`/api/orders/${id}`, config);
+
+		data && dispatch(setOrderDetails(data));
+	} catch (error) {
+		console.error(error);
 	}
 };
 

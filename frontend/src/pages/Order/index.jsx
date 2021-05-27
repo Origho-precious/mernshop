@@ -12,7 +12,7 @@ const Orders = ({ history }) => {
 	const {
 		cartReducer: { shippingAddress, paymentMethod, cartItems },
 		authReducer: { authenticated },
-		orderReducer: { order, success, failed, loading },
+		orderReducer: { orderId, success, failed, loading },
 	} = useSelector((state) => state);
 
 	useEffect(() => {
@@ -33,8 +33,8 @@ const Orders = ({ history }) => {
 	const totalPrice = Number(cartPrice + shippingPrice + taxPrice).toFixed(2);
 
 	useEffect(() => {
-		success && history.push(`/order/${order._id}`);
-	}, [success, order, history]);
+		success && history.push(`/order/${orderId}`);
+	}, [success, orderId, history]);
 
 	const placeOrder = () => {
 		dispatch(

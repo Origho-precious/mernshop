@@ -35,3 +35,17 @@ export const createOrder = asyncHandler(async (req, res) => {
 		res.status(201).json(newOrder._id);
 	}
 });
+
+export const getOrderById = asyncHandler(async (req, res) => {
+	const id = req.params.id;
+
+	const order = await Order.findById(id);
+
+	if (order) {
+		res.status(200);
+		res.json(order);
+	} else {
+		res.status(404);
+		throw new Error("Order not found");
+	}
+});
