@@ -10,6 +10,8 @@ const orderSlice = createSlice({
 		failed: false,
 		order: null,
 		orderDetailsFailed: false,
+		orderPaySuccess: false,
+		orderPayFailed: null,
 	},
 	reducers: {
 		setLoading: (state) => {
@@ -36,6 +38,20 @@ const orderSlice = createSlice({
 			state.order = null;
 			state.orderDetailsFailed = payload;
 		},
+		setOrderReset: (state) => {
+			state.order = null;
+			state.orderId = null;
+		},
+		setOrderPaySuccess: (state) => {
+			state.loading = false;
+			state.orderPaySuccess = true;
+			state.orderPayFailed = null;
+		},
+		setOrderPayFailed: (state, { payload }) => {
+			state.loading = false;
+			state.orderPaySuccess = false;
+			state.orderPayFailed = payload;
+		},
 	},
 });
 
@@ -45,6 +61,9 @@ const {
 	setLoading,
 	setOrderDetails,
 	setOrderDetailsFailed,
+	setOrderPayFailed,
+	setOrderPaySuccess,
+	setOrderReset,
 } = orderSlice.actions;
 
 export const createOrder = (order) => async (dispatch, getState) => {
@@ -118,5 +137,39 @@ export const getOrder = (id) => async (dispatch, getState) => {
 		);
 	}
 };
+
+export const updateOrderToPaid =
+	(id, paymentResult) => async (dispatch, getState) => {
+		const token = getState().authReducer.userInfo.token;
+
+		try {
+			dispatch(setLoading(true));
+
+			const config = {
+				headers: {
+					"Content-type": "application/json",
+					Authorization: `Bearer ${token}`,
+				},
+			};
+
+			const { data } = await axios.patch(
+				`/api/orders/${id}/pay`,
+				JSON.stringify(paymentResult),
+				config
+			);
+
+			data && dispatch(setOrderPaySuccess(true));
+			// data && dispatch(setOrderReset());
+		} catch (error) {
+			console.error(error);
+			dispatch(
+				setOrderPayFailed(
+					error?.response?.data?.message
+						? error.response.data.message
+						: error.message
+				)
+			);
+		}
+	};
 
 export default orderSlice.reducer;
