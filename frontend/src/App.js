@@ -10,8 +10,8 @@ import Signuppage from "./pages/Signuppage";
 import Profile from "./pages/Profile";
 import Shipping from "./pages/Shipping";
 import Payment from "./pages/Payment";
-import Order from "./pages/Order";
-import Orders from "./pages/Orders";
+import PlaceOrder from "./pages/PlaceOrder";
+import Order from "./pages/Orders";
 
 const App = () => {
 	return (
@@ -29,8 +29,8 @@ const App = () => {
 						<Route exact path="/profile" component={Profile} />
 						<Route exact path="/shipping" component={Shipping} />
 						<Route exact path="/payment" component={Payment} />
-						<Route exact path="/order" component={Order} />
-						<Route exact path="/order/:id" component={Orders} />
+						<Route exact path="/order" component={PlaceOrder} />
+						<Route exact path="/order/:id" component={Order} />
 					</Switch>
 				</Container>
 			</main>

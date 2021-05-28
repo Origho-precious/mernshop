@@ -88,7 +88,6 @@ export const getOrder = (id) => async (dispatch, getState) => {
 
 		const config = {
 			headers: {
-				"Content-Type": "application/json",
 				Authorization: `Bearer ${token}`,
 			},
 		};
