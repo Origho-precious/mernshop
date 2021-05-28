@@ -9,6 +9,7 @@ const orderSlice = createSlice({
 		orderId: null,
 		failed: false,
 		order: null,
+		orderDetailsFailed: false,
 	},
 	reducers: {
 		setLoading: (state) => {
@@ -27,13 +28,24 @@ const orderSlice = createSlice({
 			state.orderId = null;
 		},
 		setOrderDetails: (state, { payload }) => {
+			state.loading = false;
 			state.order = payload;
+		},
+		setOrderDetailsFailed: (state, { payload }) => {
+			state.loading = false;
+			state.order = null;
+			state.orderDetailsFailed = payload;
 		},
 	},
 });
 
-const { setOrderSuccess, setOrderFailed, setLoading, setOrderDetails } =
-	orderSlice.actions;
+const {
+	setOrderSuccess,
+	setOrderFailed,
+	setLoading,
+	setOrderDetails,
+	setOrderDetailsFailed,
+} = orderSlice.actions;
 
 export const createOrder = (order) => async (dispatch, getState) => {
 	const token = getState().authReducer.userInfo.token;
@@ -97,6 +109,13 @@ export const getOrder = (id) => async (dispatch, getState) => {
 		data && dispatch(setOrderDetails(data));
 	} catch (error) {
 		console.error(error);
+		dispatch(
+			setOrderDetailsFailed(
+				error?.response?.data?.message
+					? error.response.data.message
+					: error.message
+			)
+		);
 	}
 };
 

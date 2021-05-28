@@ -38,12 +38,17 @@ const orderSchema = Schema(
 			update_time: { type: String },
 			email: { type: String },
 		},
+		itemsPrice: {
+			type: Number,
+			required: true,
+			default: 0.0,
+		},
 		taxPrice: {
 			type: Number,
 			required: true,
 			default: 0.0,
 		},
-		shippingPice: {
+		shippingPrice: {
 			type: Number,
 			required: true,
 			default: 0.0,

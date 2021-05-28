@@ -52,7 +52,7 @@ const Orders = ({ history }) => {
 
 	return (
 		<>
-			<CheckoutSteps strp1 step2 step3 step4 />
+			<CheckoutSteps step1 step2 step3 step4 />
 			<Row>
 				<Col md={8}>
 					<ListGroup variant="flush">
