@@ -39,7 +39,7 @@ export const createOrder = asyncHandler(async (req, res) => {
 export const getOrderById = asyncHandler(async (req, res) => {
 	const id = req.params.id;
 
-	const order = await Order.findById(id);
+	const order = await Order.findById(id).populate("user", "name email");
 
 	if (order) {
 		res.status(200);
