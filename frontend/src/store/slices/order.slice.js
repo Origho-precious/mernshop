@@ -41,6 +41,8 @@ const orderSlice = createSlice({
 		setOrderReset: (state) => {
 			state.order = null;
 			state.orderId = null;
+			state.orderPaySuccess = false;
+			state.success = false;
 		},
 		setOrderPaySuccess: (state) => {
 			state.loading = false;
@@ -159,7 +161,6 @@ export const updateOrderToPaid =
 			);
 
 			data && dispatch(setOrderPaySuccess(true));
-			// data && dispatch(setOrderReset());
 		} catch (error) {
 			console.error(error);
 			dispatch(
@@ -171,5 +172,9 @@ export const updateOrderToPaid =
 			);
 		}
 	};
+
+export const resetOrder = () => (dispatch) => {
+	dispatch(setOrderReset());
+};
 
 export default orderSlice.reducer;

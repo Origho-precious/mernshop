@@ -7,7 +7,7 @@ import Loader from "../../components/Loader/Loader";
 import CheckoutSteps from "../../components/CheckoutSteps/CheckoutSteps";
 import { createOrder } from "../../store/slices/order.slice";
 
-const Orders = ({ history }) => {
+const PlaceOrder = ({ history }) => {
 	const dispatch = useDispatch();
 	const {
 		cartReducer: { shippingAddress, paymentMethod, cartItems },
@@ -157,4 +157,4 @@ const Orders = ({ history }) => {
 	);
 };
 
-export default Orders;
+export default PlaceOrder;
