@@ -1,17 +1,44 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import axios from "axios";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { Row, Col, ListGroup, Image, Card, Button } from "react-bootstrap";
+import { PayPalButton } from "react-paypal-button-v2";
+import { Row, Col, ListGroup, Image, Card } from "react-bootstrap";
 import Message from "../../components/Message/Message";
 import Loader from "../../components/Loader/Loader";
-import { getOrder } from "../../store/slices/order.slice";
+import {
+	getOrder,
+	resetOrder,
+	updateOrderToPaid,
+} from "../../store/slices/order.slice";
 
 const Order = ({ history, match }) => {
+	const [sdkReady, setSdkReady] = useState(false);
 	const dispatch = useDispatch();
 	const {
 		authReducer: { authenticated },
-		orderReducer: { order, orderDetailsFailed, loading },
+		orderReducer: {
+			order,
+			orderDetailsFailed,
+			loading,
+			orderPaySuccess,
+			// orderPayFailed,
+		},
 	} = useSelector((state) => state);
+
+	const addPayPalScript = async () => {
+		const { data } = await axios.get("/api/config/paypal");
+
+		const script = document.createElement("script");
+		script.type = "text/javascript";
+		script.src = `https://www.paypal.com/sdk/js?client-id=${data}`;
+		script.async = true;
+		script.onload = () => {
+			setSdkReady(true);
+		};
+
+		document.body.appendChild(script);
+	};
 
 	useEffect(() => {
 		!match?.params?.id && history.push("/");
@@ -19,8 +46,24 @@ const Order = ({ history, match }) => {
 	}, [authenticated, history, match]);
 
 	useEffect(() => {
-		match?.params?.id && dispatch(getOrder(match.params.id));
-	}, [dispatch, match.params.id]);
+		if (match?.params?.id && !order) {
+			dispatch(getOrder(match.params.id));
+		}
+
+		if (orderPaySuccess) {
+			dispatch(resetOrder());
+			dispatch(getOrder(match?.params?.id));
+		}
+	}, [dispatch, match.params.id, order, orderPaySuccess]);
+
+	useEffect(() => {
+		addPayPalScript();
+	}, []);
+
+	const onPaymentSuccess = (paymentResult) => {
+		console.log(paymentResult);
+		dispatch(updateOrderToPaid(match?.params?.id, paymentResult));
+	};
 
 	return (
 		<>
@@ -53,7 +96,9 @@ const Order = ({ history, match }) => {
 										{order?.shippingAddress?.country}
 									</p>
 									{order?.isDelivered ? (
-										<Message variant="success">Delivered on {order?.deliveredAt}</Message>
+										<Message variant="success">
+											Delivered on {order?.deliveredAt}
+										</Message>
 									) : (
 										<Message variant="danger"> Not Delivered</Message>
 									)}
@@ -134,6 +179,19 @@ const Order = ({ history, match }) => {
 											<Col>${order?.totalPrice}</Col>
 										</Row>
 									</ListGroup.Item>
+									{!order?.isPaid && (
+										<ListGroup.Item>
+											{loading && <Loader />}
+											{!sdkReady ? (
+												<Loader />
+											) : (
+												<PayPalButton
+													amount={order?.totalPrice}
+													onSuccess={onPaymentSuccess}
+												/>
+											)}
+										</ListGroup.Item>
+									)}
 								</ListGroup>
 							</Card>
 						</Col>
