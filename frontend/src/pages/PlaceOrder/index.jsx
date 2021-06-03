@@ -34,7 +34,8 @@ const PlaceOrder = ({ history }) => {
 
 	useEffect(() => {
 		success && history.push(`/order/${orderId}`);
-	}, [success, orderId, history]);
+		!cartItems.length && history.push('/profile')
+	}, [success, orderId, history, cartItems]);
 
 	const placeOrder = () => {
 		dispatch(
