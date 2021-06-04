@@ -10,6 +10,9 @@ const userSlice = createSlice({
 		profileError: null,
 		updateSuccess: false,
 		myOrders: [],
+		usersListLoading: false,
+		users: [],
+		fetchUsersError: null,
 	},
 	reducers: {
 		setLoading: (state, { payload }) => {
@@ -39,6 +42,19 @@ const userSlice = createSlice({
 			state.loading = false;
 			state.myOrders = payload;
 		},
+		setUserListLoading: (state) => {
+			state.usersListLoading = true;
+		},
+		setUsersList: (state, { payload }) => {
+			state.usersListLoading = false;
+			state.users = payload;
+			state.fetchUsersError = null;
+		},
+		setUserListFailed: (state, { payload }) => {
+			state.usersListLoading = false;
+			state.users = [];
+			state.fetchUsersError = payload;
+		},
 	},
 });
 
@@ -49,6 +65,9 @@ const {
 	setUpdateProfileSuccess,
 	setUpdateProfileFailed,
 	setMyOrders,
+	setUserListLoading,
+	setUsersList,
+	setUserListFailed
 } = userSlice.actions;
 
 export const clearState = () => (dispatch) => {
@@ -132,6 +151,33 @@ export const getMyOrders = () => async (dispatch, getState) => {
 		dispatch(setMyOrders(data));
 	} catch (error) {
 		console.error(error);
+	}
+};
+
+export const fetchAllUsers = () => async (dispatch, getState) => {
+	const token = getState().authReducer?.userInfo?.token;
+
+	try {
+		dispatch(setUserListLoading());
+
+		const config = {
+			headers: {
+				Authorization: `Bearer ${token}`,
+			},
+		};
+
+		const { data } = await axios.get("/api/users", config);
+
+		dispatch(setUsersList(data));
+	} catch (error) {
+		console.error(error);
+		dispatch(
+			setUserListFailed(
+				error?.response?.data?.message
+					? error.response.data.message
+					: error.message
+			)
+		);
 	}
 };
 
