@@ -1,10 +1,14 @@
 import { useState, useEffect } from "react";
-// import { Link } from "react-router-dom";
+import { LinkContainer } from "react-router-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
-import { Form, Button, Row, Col, FormControl } from "react-bootstrap";
+import { Form, Button, Row, Col, FormControl, Table } from "react-bootstrap";
 import Message from "../../components/Message/Message";
 import Loader from "../../components/Loader/Loader";
-import { fetchProfile, updateProfile } from "../../store/slices/user.slice";
+import {
+	fetchProfile,
+	updateProfile,
+	getMyOrders,
+} from "../../store/slices/user.slice";
 
 const Profile = ({ history }) => {
 	const dispatch = useDispatch();
@@ -14,6 +18,7 @@ const Profile = ({ history }) => {
 		loading,
 		profile,
 		updateProfileError,
+		myOrders,
 	} = useSelector((state) => state.userReducer);
 	const { authenticated } = useSelector((state) => state.authReducer);
 
@@ -39,6 +44,10 @@ const Profile = ({ history }) => {
 			dispatch(updateProfile({ name, email, password }));
 		}
 	};
+
+	useEffect(() => {
+		!myOrders?.length && dispatch(getMyOrders());
+	}, [dispatch, myOrders]);
 
 	return (
 		<Row>
@@ -96,7 +105,53 @@ const Profile = ({ history }) => {
 				</Form>
 			</Col>
 			<Col>
-					
+				<h2>My Orders</h2>
+				{loading ? (
+					<Loader />
+				) : (
+					<Table className="table-sm" striped bordered hover responsive>
+						<thead>
+							<tr>
+								<th>ID</th>
+								<th>DATE</th>
+								<th>TOTAL</th>
+								<th>PAID</th>
+								<th>DELIVERED</th>
+								<th></th>
+							</tr>
+						</thead>
+						<tbody>
+							{myOrders?.map((order) => (
+								<tr key={order?._id}>
+									<th>{order?._id}</th>
+									<th>{order?.createdAt.substring(0, 10)}</th>
+									<th>{order?.totalPrice}</th>
+									<th>
+										{order?.isPaid ? (
+											order?.paidAt.substring(0, 10)
+										) : (
+											<i className="fas fa-times text-danger" />
+										)}
+									</th>
+									<th>
+										{order?.isDelivered ? (
+											order?.deliveredAt.substring(0, 10)
+										) : (
+											<i className="fas fa-times text-danger" />
+										)}
+									</th>
+									<th>
+										<LinkContainer to={`/order/${order?._id}`}>
+											<Button className="btn-sm" variant="light">
+												Details
+											</Button>
+										</LinkContainer>
+									</th>
+								</tr>
+							))}
+						</tbody>
+					</Table>
+				)}
 			</Col>
 		</Row>
 	);

@@ -9,6 +9,7 @@ const userSlice = createSlice({
 		updateProfileError: null,
 		profileError: null,
 		updateSuccess: false,
+		myOrders: [],
 	},
 	reducers: {
 		setLoading: (state, { payload }) => {
@@ -34,6 +35,10 @@ const userSlice = createSlice({
 			state.updateSuccess = false;
 			state.updateProfileError = payload;
 		},
+		setMyOrders: (state, { payload }) => {
+			state.loading = false;
+			state.myOrders = payload;
+		},
 	},
 });
 
@@ -43,6 +48,7 @@ const {
 	setUserProfileFailed,
 	setUpdateProfileSuccess,
 	setUpdateProfileFailed,
+	setMyOrders,
 } = userSlice.actions;
 
 export const clearState = () => (dispatch) => {
@@ -106,6 +112,26 @@ export const updateProfile = (user) => async (dispatch, getState) => {
 					: error.message
 			)
 		);
+	}
+};
+
+export const getMyOrders = () => async (dispatch, getState) => {
+	const token = getState().authReducer?.userInfo?.token;
+
+	try {
+		dispatch(setLoading(true));
+
+		const config = {
+			headers: {
+				Authorization: `Bearer ${token}`,
+			},
+		};
+
+		const { data } = await axios.get("/api/orders/myOrders", config);
+
+		dispatch(setMyOrders(data));
+	} catch (error) {
+		console.error(error);
 	}
 };
 
