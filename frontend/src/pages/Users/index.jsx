@@ -6,21 +6,22 @@ import Message from "../../components/Message/Message";
 import Loader from "../../components/Loader/Loader";
 import { fetchAllUsers } from "../../store/slices/user.slice";
 
-const AllUsers = () => {
+const AllUsers = ({ history }) => {
 	const dispatch = useDispatch();
 	const {
-		users,
-		usersListLoading,
-		fetchUsersError: error,
-	} = useSelector((state) => state.userReducer);
+		authReducer: { authenticated, userInfo },
+		userReducer: { users, usersListLoading, fetchUsersError: error },
+	} = useSelector((state) => state);
 
 	useEffect(() => {
-		dispatch(fetchAllUsers());
-  }, [dispatch]);
-  
-  const deleteHandler = () => {
+		!authenticated
+			? history.push("/login")
+			: !userInfo.isAdmin
+			? history.push("/")
+			: dispatch(fetchAllUsers());
+	}, [authenticated, dispatch, history, userInfo]);
 
-  }
+	const deleteHandler = () => {};
 
 	return (
 		<div>
