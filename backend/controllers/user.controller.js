@@ -102,3 +102,12 @@ export const updateUserProfile = asyncHandler(async (req, res) => {
 		throw new Error("Can't update profile with null");
 	}
 });
+
+// @desc Get user profile
+// @route GET /api/users/
+// @access Private/Admin
+export const getUsers = asyncHandler(async (req, res) => {
+	const users = await User.find({}).select(["-password", "-__v"]);
+
+	res.status(200).json(users);
+});
