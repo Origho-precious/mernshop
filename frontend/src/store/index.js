@@ -26,6 +26,7 @@ const persistConfig = {
 	key: "proshop",
 	storage,
 	stateReconciler: autoMergeLevel1,
+	whitelist: ["authReducer", "cartReducer", "orderReducer"],
 };
 
 const reducers = combineReducers({
