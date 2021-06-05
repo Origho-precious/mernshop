@@ -108,6 +108,20 @@ export const updateUserProfile = asyncHandler(async (req, res) => {
 // @access Private/Admin
 export const getUsers = asyncHandler(async (req, res) => {
 	const users = await User.find({}).select(["-password", "-__v"]);
-
 	res.status(200).json(users);
+});
+
+// @desc Delete user
+// @route DELETE /api/users/:id
+// @access Private/Admin
+export const deleteUser = asyncHandler(async (req, res) => {
+	const user = await User.findById(req.params.id);
+
+	if (user) {
+		await user.remove();
+		res.status(200).json({ message: "User removed successfully!" });
+	} else {
+		res.status(404);
+		throw new Error("User not found");
+	}
 });
