@@ -4,13 +4,19 @@ import { useDispatch, useSelector } from "react-redux";
 import { Table, Button } from "react-bootstrap";
 import Message from "../../components/Message/Message";
 import Loader from "../../components/Loader/Loader";
-import { fetchAllUsers } from "../../store/slices/user.slice";
+import { fetchAllUsers, deleteUser } from "../../store/slices/user.slice";
 
 const AllUsers = ({ history }) => {
 	const dispatch = useDispatch();
 	const {
 		authReducer: { authenticated, userInfo },
-		userReducer: { users, usersListLoading, fetchUsersError: error },
+		userReducer: {
+			users,
+			usersListLoading,
+			fetchUsersError: error,
+			deleteUserSuccess,
+			deleteUserFailed,
+		},
 	} = useSelector((state) => state);
 
 	useEffect(() => {
@@ -21,15 +27,27 @@ const AllUsers = ({ history }) => {
 			: dispatch(fetchAllUsers());
 	}, [authenticated, dispatch, history, userInfo]);
 
-	const deleteHandler = () => {};
+	const deleteHandler = (id, name) => {
+		if (id) {
+			const confirmDelete = window.confirm(`Sure you want to delete ${name}?`);
+			confirmDelete && dispatch(deleteUser(id));
+		}
+	};
+
+	useEffect(() => {
+		deleteUserSuccess && dispatch(fetchAllUsers());
+	}, [deleteUserSuccess, dispatch]);
 
 	return (
 		<div>
 			<h1>Users</h1>
+			{deleteUserSuccess && (
+				<Message variant="success">{deleteUserSuccess}</Message>
+			)}
 			{usersListLoading ? (
 				<Loader />
-			) : error ? (
-				<Message variant="danger">{error}</Message>
+			) : error || deleteUserFailed ? (
+				<Message variant="danger">{error || deleteUserFailed}</Message>
 			) : (
 				<Table className="table-sm" striped bordered hover responsive>
 					<thead>
@@ -64,7 +82,7 @@ const AllUsers = ({ history }) => {
 											</Button>
 										</LinkContainer>
 										<Button
-											onClick={() => deleteHandler(user?._id)}
+											onClick={() => deleteHandler(user?._id, user?.name)}
 											className="btn-sm"
 											variant="danger"
 										>

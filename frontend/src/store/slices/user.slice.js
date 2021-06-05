@@ -13,6 +13,8 @@ const userSlice = createSlice({
 		usersListLoading: false,
 		users: [],
 		fetchUsersError: null,
+		deleteUserSuccess: null,
+		deleteUserFailed: null,
 	},
 	reducers: {
 		setLoading: (state, { payload }) => {
@@ -49,11 +51,25 @@ const userSlice = createSlice({
 			state.usersListLoading = false;
 			state.users = payload;
 			state.fetchUsersError = null;
+			state.deleteUserSuccess = null;
+			state.deleteUserFailed = null;
 		},
 		setUserListFailed: (state, { payload }) => {
 			state.usersListLoading = false;
 			state.users = [];
 			state.fetchUsersError = payload;
+			state.deleteUserSuccess = null;
+			state.deleteUserFailed = null;
+		},
+		setDeleteUserSuccess: (state, { payload }) => {
+			state.usersListLoading = false;
+			state.deleteUserSuccess = payload;
+			state.deleteUserFailed = null;
+		},
+		setDeleteUserFailed: (state, { payload }) => {
+			state.usersListLoading = false;
+			state.deleteUserFailed = payload;
+			state.deleteUserSuccess = null;
 		},
 	},
 });
@@ -67,7 +83,9 @@ const {
 	setMyOrders,
 	setUserListLoading,
 	setUsersList,
-	setUserListFailed
+	setUserListFailed,
+	setDeleteUserSuccess,
+	setDeleteUserFailed,
 } = userSlice.actions;
 
 export const clearState = () => (dispatch) => {
@@ -170,9 +188,34 @@ export const fetchAllUsers = () => async (dispatch, getState) => {
 
 		dispatch(setUsersList(data));
 	} catch (error) {
-		console.error(error);
 		dispatch(
 			setUserListFailed(
+				error?.response?.data?.message
+					? error.response.data.message
+					: error.message
+			)
+		);
+	}
+};
+
+export const deleteUser = (id) => async (dispatch, getState) => {
+	const token = getState().authReducer?.userInfo?.token;
+
+	try {
+		dispatch(setUserListLoading());
+
+		const config = {
+			headers: {
+				Authorization: `Bearer ${token}`,
+			},
+		};
+
+		const { data } = await axios.delete(`/api/users/${id}`, config);
+
+		dispatch(setDeleteUserSuccess(data?.message));
+	} catch (error) {
+		dispatch(
+			setDeleteUserFailed(
 				error?.response?.data?.message
 					? error.response.data.message
 					: error.message
