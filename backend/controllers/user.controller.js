@@ -73,8 +73,6 @@ export const registerUser = asyncHandler(async (req, res) => {
 export const updateUserProfile = asyncHandler(async (req, res) => {
 	const user = await User.findById(req.user._id);
 
-	console.log(req.body);
-
 	if (req.body.name && req.body.email) {
 		if (user) {
 			user.name = req.body.name || user.name;
@@ -126,6 +124,9 @@ export const deleteUser = asyncHandler(async (req, res) => {
 	}
 });
 
+// @desc Get user by Id
+// @route GET /api/users/:id
+// @access Private/Admin
 export const getUserById = asyncHandler(async (req, res) => {
 	const user = await User.findById({ _id: req.params.id }).select([
 		"-password",
@@ -137,5 +138,30 @@ export const getUserById = asyncHandler(async (req, res) => {
 	} else {
 		res.status(404);
 		throw new Error("User not found");
+	}
+});
+
+// @desc Update user
+// @route PATCH /api/users/:id
+// @access Private/Admin
+export const updateUserAsAdmin = asyncHandler(async (req, res) => {
+	const user = await User.findById({ _id: req.params.id });
+
+	if (req.body) {
+		if (user) {
+			user.name = req.body.name || user.name;
+			user.email = req.body.email || user.email;
+			user.isAdmin = req.body.isAdmin || user.isAdmin;
+
+			await user.save();
+
+			res.status(200).json({ message: "User updated successfully!" });
+		} else {
+			res.status(404);
+			throw new Error("User not found");
+		}
+	} else {
+		res.status(422);
+		throw new Error("Can't update user with null");
 	}
 });
