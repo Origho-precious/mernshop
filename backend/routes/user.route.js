@@ -2,6 +2,7 @@ import express from "express";
 import {
 	authUser,
 	deleteUser,
+	getUserById,
 	getUserProfile,
 	getUsers,
 	registerUser,
@@ -17,6 +18,10 @@ router
 	.route("/profile")
 	.get(protect, getUserProfile)
 	.patch(protect, updateUserProfile);
-router.route("/:id").delete(protect, admin, deleteUser);
+router
+	.route("/:id")
+	.delete(protect, admin, deleteUser)
+	.get(protect, admin, getUserById);
+
 
 export default router;
