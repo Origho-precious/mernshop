@@ -15,7 +15,12 @@ const EditUser = ({ match, history }) => {
 	const dispatch = useDispatch();
 	const {
 		authReducer: { authenticated, userInfo },
-		userReducer: { userToEdit, loading, updateUserError: error },
+		userReducer: {
+			userToEdit,
+			loading,
+			updateUserSuccess,
+			updateUserError: error,
+		},
 	} = useSelector((state) => state);
 	const [name, setName] = useState("");
 	const [email, setEmail] = useState("");
@@ -43,6 +48,10 @@ const EditUser = ({ match, history }) => {
 			setCanSubmitForm(false);
 		}
 	}, [email, isAdmin, name, userToEdit?.isAdmin]);
+
+	useEffect(() => {
+		updateUserSuccess && history.push("/admin/users");
+	}, [history, updateUserSuccess]);
 
 	const handleSubmit = (e) => {
 		e.preventDefault();

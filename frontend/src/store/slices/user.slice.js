@@ -16,6 +16,7 @@ const userSlice = createSlice({
 		deleteUserSuccess: null,
 		deleteUserFailed: null,
 		updateUserError: null,
+		updateUserSuccess: null,
 		userToEdit: null,
 	},
 	reducers: {
@@ -56,6 +57,7 @@ const userSlice = createSlice({
 			state.deleteUserSuccess = null;
 			state.deleteUserFailed = null;
 			state.userToEdit = null;
+			state.updateUserSuccess = null;
 		},
 		setUserListFailed: (state, { payload }) => {
 			state.usersListLoading = false;
@@ -82,10 +84,12 @@ const userSlice = createSlice({
 			state.loading = false;
 			state.updateUserError = null;
 			state.userToEdit = payload;
+			state.updateUserSuccess = true;
 		},
 		setUpdateUserFailed: (state, { payload }) => {
 			state.loading = false;
 			state.updateUserError = payload;
+			state.updateUserSuccess = null;
 		},
 	},
 });
