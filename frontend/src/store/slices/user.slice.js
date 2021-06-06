@@ -15,10 +15,12 @@ const userSlice = createSlice({
 		fetchUsersError: null,
 		deleteUserSuccess: null,
 		deleteUserFailed: null,
+		updateUserError: null,
+		userToEdit: null,
 	},
 	reducers: {
 		setLoading: (state, { payload }) => {
-			state.loading = payload;
+			state.loading = true;
 		},
 		setUserProfile: (state, { payload }) => {
 			state.loading = false;
@@ -53,6 +55,7 @@ const userSlice = createSlice({
 			state.fetchUsersError = null;
 			state.deleteUserSuccess = null;
 			state.deleteUserFailed = null;
+			state.userToEdit = null;
 		},
 		setUserListFailed: (state, { payload }) => {
 			state.usersListLoading = false;
@@ -60,6 +63,7 @@ const userSlice = createSlice({
 			state.fetchUsersError = payload;
 			state.deleteUserSuccess = null;
 			state.deleteUserFailed = null;
+			state.userToEdit = null;
 		},
 		setDeleteUserSuccess: (state, { payload }) => {
 			state.usersListLoading = false;
@@ -70,6 +74,18 @@ const userSlice = createSlice({
 			state.usersListLoading = false;
 			state.deleteUserFailed = payload;
 			state.deleteUserSuccess = null;
+		},
+		setUserToEdit: (state, { payload }) => {
+			state.userToEdit = payload;
+		},
+		setUpdateUserSuccess: (state, { payload }) => {
+			state.loading = false;
+			state.updateUserError = null;
+			state.userToEdit = payload;
+		},
+		setUpdateUserFailed: (state, { payload }) => {
+			state.loading = false;
+			state.updateUserError = payload;
 		},
 	},
 });
@@ -86,6 +102,9 @@ const {
 	setUserListFailed,
 	setDeleteUserSuccess,
 	setDeleteUserFailed,
+	setUpdateUserFailed,
+	setUpdateUserSuccess,
+	setUserToEdit,
 } = userSlice.actions;
 
 export const clearState = () => (dispatch) => {
@@ -216,6 +235,55 @@ export const deleteUser = (id) => async (dispatch, getState) => {
 	} catch (error) {
 		dispatch(
 			setDeleteUserFailed(
+				error?.response?.data?.message
+					? error.response.data.message
+					: error.message
+			)
+		);
+	}
+};
+
+export const getUserToEdit = (id) => async (dispatch, getState) => {
+	const token = getState().authReducer?.userInfo?.token;
+
+	try {
+		const config = {
+			headers: {
+				Authorization: `Bearer ${token}`,
+			},
+		};
+
+		const { data } = await axios.get(`/api/users/${id}`, config);
+
+		dispatch(setUserToEdit(data));
+	} catch (error) {
+		console.log(error);
+	}
+};
+
+export const updateUserAsAdmin = (id, body) => async (dispatch, getState) => {
+	const token = getState().authReducer?.userInfo?.token;
+
+	try {
+		dispatch(setLoading(true));
+
+		const config = {
+			headers: {
+				"Content-Type": "application/json",
+				Authorization: `Bearer ${token}`,
+			},
+		};
+
+		const { data } = await axios.patch(
+			`/api/users/${id}`,
+			JSON.stringify(body),
+			config
+		);
+
+		dispatch(setUpdateUserSuccess(data));
+	} catch (error) {
+		dispatch(
+			setUpdateUserFailed(
 				error?.response?.data?.message
 					? error.response.data.message
 					: error.message

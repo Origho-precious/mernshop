@@ -153,9 +153,9 @@ export const updateUserAsAdmin = asyncHandler(async (req, res) => {
 			user.email = req.body.email || user.email;
 			user.isAdmin = req.body.isAdmin;
 
-			await user.save();
+			const updatedUser = await user.save();
 
-			res.status(200).json({ message: "User updated successfully!" });
+			res.status(200).json(updatedUser);
 		} else {
 			res.status(404);
 			throw new Error("User not found");
