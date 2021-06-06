@@ -2,13 +2,13 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { Form, Button, FormControl } from "react-bootstrap";
-import Message from "../../components/Message/Message";
-import Loader from "../../components/Loader/Loader";
+import Message from "../../../components/Message/Message";
+import Loader from "../../../components/Loader/Loader";
 import {
 	getUserToEdit,
 	updateUserAsAdmin,
-} from "../../store/slices/user.slice";
-import FormContainer from "../../components/FormContainer/FormContainer";
+} from "../../../store/slices/user.slice";
+import FormContainer from "../../../components/FormContainer/FormContainer";
 
 const EditUser = ({ match, history }) => {
 	const userId = match?.params?.id;

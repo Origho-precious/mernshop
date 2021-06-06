@@ -12,8 +12,8 @@ import Shipping from "./pages/Shipping";
 import Payment from "./pages/Payment";
 import PlaceOrder from "./pages/PlaceOrder";
 import Order from "./pages/Order";
-import Users from "./pages/Users";
-import EditUser from "./pages/Users/EditUser";
+import Users from "./pages/Admin/Users";
+import EditUser from "./pages/Admin/Users/EditUser";
 
 const App = () => {
 	return (

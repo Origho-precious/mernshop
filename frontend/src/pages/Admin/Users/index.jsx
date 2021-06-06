@@ -2,9 +2,9 @@ import { useEffect } from "react";
 import { LinkContainer } from "react-router-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { Table, Button } from "react-bootstrap";
-import Message from "../../components/Message/Message";
-import Loader from "../../components/Loader/Loader";
-import { fetchAllUsers, deleteUser } from "../../store/slices/user.slice";
+import Message from "../../../components/Message/Message";
+import Loader from "../../../components/Loader/Loader";
+import { fetchAllUsers, deleteUser } from "../../../store/slices/user.slice";
 
 const AllUsers = ({ history }) => {
 	const dispatch = useDispatch();
