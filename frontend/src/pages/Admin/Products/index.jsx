@@ -4,13 +4,22 @@ import { useDispatch, useSelector } from "react-redux";
 import { Table, Button, Row, Col } from "react-bootstrap";
 import Message from "../../../components/Message/Message";
 import Loader from "../../../components/Loader/Loader";
-import { getProductList } from "../../../store/slices/products.slice";
+import {
+	getProductList,
+	deleteProduct,
+} from "../../../store/slices/products.slice";
 
 const AllProducts = ({ history, match }) => {
 	const dispatch = useDispatch();
 	const {
 		authReducer: { authenticated, userInfo },
-		productListReducer: { loading, error, products },
+		productListReducer: {
+			loading,
+			error,
+			products,
+			deleteProductSuccess,
+			deleteProductError,
+		},
 	} = useSelector((state) => state);
 
 	useEffect(() => {
@@ -23,13 +32,15 @@ const AllProducts = ({ history, match }) => {
 
 	const deleteHandler = (id, name) => {
 		if (id) {
-			const confirmDelete = window.confirm(`Sure you want to delete ${name}?`);
+			const confirmDelete = window.confirm(`Do you want to delete ${name}?`);
+
+			confirmDelete && dispatch(deleteProduct(id));
 		}
 	};
 
 	useEffect(() => {
-		// error && dispatch(fetchAllproducts());
-	}, [error, dispatch]);
+		deleteProductSuccess && dispatch(getProductList());
+	}, [deleteProductSuccess, dispatch]);
 
 	return (
 		<>
@@ -47,8 +58,10 @@ const AllProducts = ({ history, match }) => {
 			{error && <Message variant="success">{error}</Message>}
 			{loading ? (
 				<Loader />
-			) : error ? (
-				<Message variant="danger">{error}</Message>
+			) : deleteProductSuccess ? (
+				<Message variant="danger">{deleteProductSuccess}</Message>
+			) : error || deleteProductError ? (
+				<Message variant="danger">{error || deleteProductError}</Message>
 			) : (
 				<Table className="table-sm" striped bordered hover responsive>
 					<thead>
