@@ -38,3 +38,23 @@ export const deleteProduct = asyncHandler(async (req, res) => {
 	}
 });
 
+// @desc edit product
+// @route PATCH /api/products/:id
+// @access Private/Admin
+export const editProduct = asyncHandler(async (req, res) => {
+	if (req.body) {
+		const product = await Product.findByIdAndUpdate(req.params.id, req.body);
+
+		if (product) {
+			const newProduct = await Product.findById(req.params.id);
+
+			res.status(200).json(newProduct);
+		} else {
+			res.status(404);
+			throw new Error("Product not found");
+		}
+	} else {
+		res.status(422);
+		throw new Error("Can't update product with null");
+	}
+});
