@@ -26,18 +26,20 @@ const productSlice = createSlice({
 		},
 		setCreateProductSuccess: (state, { payload }) => {
 			state.loading = false;
-			state.createdProduct = payload;
+			state.product = payload;
 		},
 		setResetState: (state) => {
 			state.loading = false;
-			state.createProduct = null;
+			state.product = null;
+			state.productUpdateSuccess = false;
 		},
 		setCreateProductFailed: (state) => {
 			state.loading = false;
-			state.createProduct = null;
+			state.product = null;
 		},
 		setProductUpdateSuccess: (state) => {
 			state.loading = false;
+			state.product = null;
 			state.productUpdateSuccess = true;
 			state.productUpdateError = false;
 		},
@@ -57,6 +59,7 @@ const {
 	setCreateProductFailed,
 	setProductUpdateFailed,
 	setProductUpdateSuccess,
+	setResetState,
 } = productSlice.actions;
 
 export const getProductDetails = (id) => async (dispatch) => {
@@ -126,6 +129,10 @@ export const editProduct = (id, body) => async (dispatch, getState) => {
 			)
 		);
 	}
+};
+
+export const resetSelectedProduct = () => (dispatch) => {
+	dispatch(setResetState());
 };
 
 export default productSlice.reducer;

@@ -21,7 +21,7 @@ const AllProducts = ({ history, match }) => {
 			deleteProductSuccess,
 			deleteProductError,
 		},
-		productReducer: { createdProduct, loading: creatingProduct },
+		productReducer: { product, loading: creatingProduct, productUpdateSuccess },
 	} = useSelector((state) => state);
 
 	useEffect(() => {
@@ -45,9 +45,9 @@ const AllProducts = ({ history, match }) => {
 	}, [deleteProductSuccess, dispatch]);
 
 	useEffect(() => {
-		createdProduct &&
-			history.push(`/admin/product/${createdProduct?._id}/edit`);
-	}, [createdProduct, dispatch, history]);
+		product?.name &&
+			history.push(`/admin/product/${product?._id}/edit`);
+	}, [product, dispatch, history]);
 
 	return (
 		<>

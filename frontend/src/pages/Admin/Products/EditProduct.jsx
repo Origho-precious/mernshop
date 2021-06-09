@@ -4,7 +4,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { Form, Button } from "react-bootstrap";
 import Message from "../../../components/Message/Message";
 import Loader from "../../../components/Loader/Loader";
-import { editProduct } from "../../../store/slices/product.slice";
+import {
+	editProduct,
+	getProductDetails,
+	resetSelectedProduct,
+} from "../../../store/slices/product.slice";
 import FormContainer from "../../../components/FormContainer/FormContainer";
 
 const EditUser = ({ match, history }) => {
@@ -13,7 +17,7 @@ const EditUser = ({ match, history }) => {
 	const {
 		authReducer: { authenticated, userInfo },
 		productReducer: {
-			createdProduct,
+			product,
 			loading,
 			productUpdateSuccess,
 			productUpdateError: error,
@@ -33,17 +37,30 @@ const EditUser = ({ match, history }) => {
 	useEffect(() => {
 		!authenticated && history.push("/login");
 		!userInfo?.isAdmin && history.push("/");
-	}, [history, authenticated, userInfo]);
+		!productId && history.push("/admin/productlist");
+	}, [history, authenticated, userInfo, productId]);
 
 	useEffect(() => {
-		setName(createdProduct?.name);
-		setPrice(createdProduct?.price);
-		setBrand(createdProduct?.brand);
-		setImage(createdProduct?.image);
-		setCategory(createdProduct?.category);
-		setCountInStock(createdProduct?.countInStock);
-		setDescription(createdProduct?.description);
-	}, [createdProduct, dispatch, productId]);
+		productId && dispatch(getProductDetails(productId));
+	}, [dispatch, productId]);
+	
+	useEffect(() => {
+		productUpdateSuccess && history.push('/admin/productlist')
+		
+		return () => {
+			dispatch(resetSelectedProduct());
+		};
+	}, [dispatch, history, productUpdateSuccess])
+
+	useEffect(() => {
+		setName(product?.name);
+		setPrice(product?.price);
+		setBrand(product?.brand);
+		setImage(product?.image);
+		setCategory(product?.category);
+		setCountInStock(product?.countInStock);
+		setDescription(product?.description);
+	}, [product, dispatch, productId]);
 
 	useEffect(() => {
 		if (
@@ -60,10 +77,6 @@ const EditUser = ({ match, history }) => {
 			setCanSubmitForm(false);
 		}
 	}, [brand, category, countInStock, description, image, name, price]);
-
-	useEffect(() => {
-		productUpdateSuccess && history.push("/admin/productList");
-	}, [history, productUpdateSuccess]);
 
 	const handleSubmit = (e) => {
 		e.preventDefault();
@@ -83,9 +96,15 @@ const EditUser = ({ match, history }) => {
 
 	return (
 		<>
-			<Link className="btn btn-light my-3" to="/admin/productlists">
+			<Button
+				className="btn btn-light my-3"
+				onClick={() => {
+					dispatch(resetSelectedProduct());
+					history.push("/admin/productlist");
+				}}
+			>
 				Go Back
-			</Link>
+			</Button>
 			<FormContainer>
 				<h1>Edit Product</h1>
 				{error && <Message variant="danger">{error}</Message>}
