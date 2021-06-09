@@ -12,8 +12,12 @@ const EditUser = ({ match, history }) => {
 	const dispatch = useDispatch();
 	const {
 		authReducer: { authenticated, userInfo },
-		userReducer: { updateUserSuccess, updateUserError: error },
-		productReducer: { createdProduct, loading },
+		productReducer: {
+			createdProduct,
+			loading,
+			productUpdateSuccess,
+			productUpdateError: error,
+		},
 	} = useSelector((state) => state);
 
 	const [name, setName] = useState("");
@@ -23,8 +27,8 @@ const EditUser = ({ match, history }) => {
 	const [category, setCategory] = useState("");
 	const [countInStock, setCountInStock] = useState(0);
 	const [description, setDescription] = useState("");
-	const [uploading, setUploading] = useState(false);
 	const [canSubmitForm, setCanSubmitForm] = useState(false);
+	// const [uploading, setUploading] = useState(false);
 
 	useEffect(() => {
 		!authenticated && history.push("/login");
@@ -57,16 +61,24 @@ const EditUser = ({ match, history }) => {
 		}
 	}, [brand, category, countInStock, description, image, name, price]);
 
-	// useEffect(() => {
-	// 	updateUserSuccess && history.push("/admin/users");
-	// }, [history, updateUserSuccess]);
+	useEffect(() => {
+		productUpdateSuccess && history.push("/admin/productList");
+	}, [history, productUpdateSuccess]);
 
 	const handleSubmit = (e) => {
 		e.preventDefault();
 
-		// let newUser = { name, email, isAdmin };
+		let newProduct = {
+			name,
+			price,
+			brand,
+			image,
+			category,
+			countInStock,
+			description,
+		};
 
-		// dispatch(updateUserAsAdmin(productId, newUser));
+		canSubmitForm && dispatch(editProduct(productId, newProduct));
 	};
 
 	return (
@@ -158,7 +170,7 @@ const EditUser = ({ match, history }) => {
 							/>
 						</Form.Group>
 
-						<Button type="submit" variant="primary">
+						<Button disabled={!canSubmitForm} type="submit" variant="primary">
 							Update
 						</Button>
 					</Form>

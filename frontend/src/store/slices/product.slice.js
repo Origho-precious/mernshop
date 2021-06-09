@@ -8,6 +8,8 @@ const productSlice = createSlice({
 			reviews: [],
 		},
 		createdProduct: null,
+		productUpdateSuccess: false,
+		productUpdateError: null,
 	},
 	reducers: {
 		setIsLoading: (state) => {
@@ -34,6 +36,16 @@ const productSlice = createSlice({
 			state.loading = false;
 			state.createProduct = null;
 		},
+		setProductUpdateSuccess: (state) => {
+			state.loading = false;
+			state.productUpdateSuccess = true;
+			state.productUpdateError = false;
+		},
+		setProductUpdateFailed: (state, { payload }) => {
+			state.loading = false;
+			state.productUpdateSuccess = false;
+			state.productUpdateError = payload;
+		},
 	},
 });
 
@@ -43,6 +55,8 @@ const {
 	setProductDetailsSuccess,
 	setCreateProductSuccess,
 	setCreateProductFailed,
+	setProductUpdateFailed,
+	setProductUpdateSuccess,
 } = productSlice.actions;
 
 export const getProductDetails = (id) => async (dispatch) => {
@@ -80,6 +94,37 @@ export const createProduct = () => async (dispatch, getState) => {
 	} catch (error) {
 		console.log(error);
 		dispatch(setCreateProductFailed());
+	}
+};
+
+export const editProduct = (id, body) => async (dispatch, getState) => {
+	const token = getState().authReducer?.userInfo?.token;
+
+	try {
+		dispatch(setIsLoading(true));
+
+		const config = {
+			headers: {
+				"Content-Type": "application/json",
+				Authorization: `Bearer ${token}`,
+			},
+		};
+
+		const { data } = await axios.patch(
+			`/api/products/${id}`,
+			JSON.stringify(body),
+			config
+		);
+
+		dispatch(setProductUpdateSuccess(data));
+	} catch (error) {
+		dispatch(
+			setProductUpdateFailed(
+				error?.response?.data?.message
+					? error.response.data.message
+					: error.message
+			)
+		);
 	}
 };
 
