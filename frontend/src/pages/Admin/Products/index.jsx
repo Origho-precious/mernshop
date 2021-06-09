@@ -21,7 +21,7 @@ const AllProducts = ({ history, match }) => {
 			deleteProductSuccess,
 			deleteProductError,
 		},
-		productReducer: { product, loading: creatingProduct, productUpdateSuccess },
+		productReducer: { product, loading: creatingProduct },
 	} = useSelector((state) => state);
 
 	useEffect(() => {
