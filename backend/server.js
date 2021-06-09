@@ -6,6 +6,7 @@ import productRoutes from "./routes/product.route.js";
 import userRoutes from "./routes/user.route.js";
 import orderRoutes from "./routes/order.route.js";
 import { notFound, errorHandler } from "./middlewares/error.middleware.js";
+import uploadRoute from "./routes/upload.route.js";
 
 dotenv.config();
 
@@ -15,6 +16,8 @@ const app = express();
 
 app.use(express.json());
 
+app.use("/uploads", express.static(path.join(__dirname, "/uploads")));
+
 app.get("/", (req, res) => {
 	res.send("API is running...");
 });
@@ -22,7 +25,11 @@ app.use("/api/products", productRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/orders", orderRoutes);
 
-app.get("/api/config/paypal", (req, res) => res.send(process.env.PAYPAL_CLIENT_ID))
+app.get("/api/config/paypal", (req, res) =>
+	res.send(process.env.PAYPAL_CLIENT_ID)
+);
+
+app.use("/api/upload", uploadRoute);
 
 app.use(notFound);
 app.use(errorHandler);
