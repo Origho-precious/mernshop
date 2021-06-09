@@ -8,6 +8,7 @@ import {
 	getProductList,
 	deleteProduct,
 } from "../../../store/slices/products.slice";
+import { createProduct } from "../../../store/slices/product.slice";
 
 const AllProducts = ({ history, match }) => {
 	const dispatch = useDispatch();
@@ -20,6 +21,7 @@ const AllProducts = ({ history, match }) => {
 			deleteProductSuccess,
 			deleteProductError,
 		},
+		productReducer: { createdProduct, loading: creatingProduct },
 	} = useSelector((state) => state);
 
 	useEffect(() => {
@@ -42,6 +44,11 @@ const AllProducts = ({ history, match }) => {
 		deleteProductSuccess && dispatch(getProductList());
 	}, [deleteProductSuccess, dispatch]);
 
+	useEffect(() => {
+		createdProduct &&
+			history.push(`/admin/product/${createdProduct?._id}/edit`);
+	}, [createdProduct, dispatch, history]);
+
 	return (
 		<>
 			<Row className="align-items-center">
@@ -49,14 +56,14 @@ const AllProducts = ({ history, match }) => {
 					<h1>Products</h1>
 				</Col>
 				<Col className="text-right">
-					<Button onClick={() => {}} className="my-3">
+					<Button onClick={() => dispatch(createProduct())} className="my-3">
 						<i className="fas fas-plus" /> Create Product
 					</Button>
 				</Col>
 			</Row>
 
 			{error && <Message variant="success">{error}</Message>}
-			{loading ? (
+			{loading || creatingProduct ? (
 				<Loader />
 			) : deleteProductSuccess ? (
 				<Message variant="danger">{deleteProductSuccess}</Message>

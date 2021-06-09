@@ -7,6 +7,7 @@ const productSlice = createSlice({
 		product: {
 			reviews: [],
 		},
+		createdProduct: null,
 	},
 	reducers: {
 		setIsLoading: (state) => {
@@ -21,11 +22,28 @@ const productSlice = createSlice({
 			state.loading = false;
 			state.error = payload;
 		},
+		setCreateProductSuccess: (state, { payload }) => {
+			state.loading = false;
+			state.createdProduct = payload;
+		},
+		setResetState: (state) => {
+			state.loading = false;
+			state.createProduct = null;
+		},
+		setCreateProductFailed: (state) => {
+			state.loading = false;
+			state.createProduct = null;
+		},
 	},
 });
 
-const { setIsLoading, setProductDetailsFailed, setProductDetailsSuccess } =
-	productSlice.actions;
+const {
+	setIsLoading,
+	setProductDetailsFailed,
+	setProductDetailsSuccess,
+	setCreateProductSuccess,
+	setCreateProductFailed,
+} = productSlice.actions;
 
 export const getProductDetails = (id) => async (dispatch) => {
 	try {
@@ -41,6 +59,27 @@ export const getProductDetails = (id) => async (dispatch) => {
 					: error.message
 			)
 		);
+	}
+};
+
+export const createProduct = () => async (dispatch, getState) => {
+	const token = getState().authReducer?.userInfo?.token;
+
+	try {
+		dispatch(setIsLoading());
+
+		const config = {
+			headers: {
+				"Content-Type": "application/json",
+				Authorization: `Bearer ${token}`,
+			},
+		};
+
+		const { data } = await axios.post(`/api/products`, {}, config);
+		dispatch(setCreateProductSuccess(data));
+	} catch (error) {
+		console.log(error);
+		dispatch(setCreateProductFailed());
 	}
 };
 
