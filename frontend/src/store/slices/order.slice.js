@@ -12,6 +12,8 @@ const orderSlice = createSlice({
 		orderDetailsFailed: false,
 		orderPaySuccess: false,
 		orderPayFailed: null,
+		allOrders: [],
+		getAllOrdersError: null,
 	},
 	reducers: {
 		setLoading: (state) => {
@@ -54,6 +56,16 @@ const orderSlice = createSlice({
 			state.orderPaySuccess = false;
 			state.orderPayFailed = payload;
 		},
+		setAllOrders: (state, { payload }) => {
+			state.loading = false;
+			state.allOrders = payload;
+			state.getAllOrdersError = null;
+		},
+		setAllOrdersFailed: (state, { payload }) => {
+			state.loading = false;
+			state.allOrders = [];
+			state.getAllOrdersError = payload;
+		},
 	},
 });
 
@@ -66,6 +78,8 @@ const {
 	setOrderPayFailed,
 	setOrderPaySuccess,
 	setOrderReset,
+	setAllOrders,
+	setAllOrdersFailed,
 } = orderSlice.actions;
 
 export const createOrder = (order) => async (dispatch, getState) => {
@@ -175,6 +189,33 @@ export const updateOrderToPaid =
 
 export const resetOrder = () => (dispatch) => {
 	dispatch(setOrderReset());
+};
+
+export const getAllOrders = () => async (dispatch, getState) => {
+	const token = getState().authReducer.userInfo.token;
+
+	try {
+		dispatch(setLoading(true));
+
+		const config = {
+			headers: {
+				Authorization: `Bearer ${token}`,
+			},
+		};
+
+		const { data } = await axios.get(`/api/orders`, config);
+
+		data && dispatch(setAllOrders(data));
+	} catch (error) {
+		console.error(error);
+		dispatch(
+			setAllOrdersFailed(
+				error?.response?.data?.message
+					? error.response.data.message
+					: error.message
+			)
+		);
+	}
 };
 
 export default orderSlice.reducer;

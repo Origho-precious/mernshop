@@ -10,7 +10,7 @@ import {
 } from "../../../store/slices/products.slice";
 import { createProduct } from "../../../store/slices/product.slice";
 
-const AllProducts = ({ history, match }) => {
+const AllProducts = ({ history }) => {
 	const dispatch = useDispatch();
 	const {
 		authReducer: { authenticated, userInfo },
