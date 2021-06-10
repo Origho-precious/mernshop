@@ -2,7 +2,7 @@ import asyncHandler from "express-async-handler";
 import Order from "../models/order.model.js";
 
 // @desc Create new order
-// @route GET /api/orders
+// @route POST /api/orders
 // @access Private
 export const createOrder = asyncHandler(async (req, res) => {
 	const {
@@ -54,7 +54,7 @@ export const getOrderById = asyncHandler(async (req, res) => {
 });
 
 // @desc Update order to paid
-// @route GET /api/orders/:id/pay
+// @route PATCH /api/orders/:id/pay
 // @access Private
 export const updateOrderToPaid = asyncHandler(async (req, res) => {
 	const id = req.params.id;
@@ -86,5 +86,13 @@ export const updateOrderToPaid = asyncHandler(async (req, res) => {
 // @access Private
 export const getUserOrders = asyncHandler(async (req, res) => {
 	const orders = await Order.find({ user: req.user._id });
+	res.status(200).json(orders);
+});
+
+// @desc Get ALL Orders
+// @route GET /api/orders
+// @access Private/Admin
+export const getAllOrders = asyncHandler(async (req, res) => {
+	const orders = await Order.find({}).populate("user", "id name");
 	res.status(200).json(orders);
 });
