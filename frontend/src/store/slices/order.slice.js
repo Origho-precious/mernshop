@@ -186,6 +186,38 @@ export const updateOrderToPaid =
 			);
 		}
 	};
+export const markOrderAsDelivered =
+	(id) => async (dispatch, getState) => {
+		const token = getState().authReducer.userInfo.token;
+
+		try {
+			dispatch(setLoading(true));
+
+			const config = {
+				headers: {
+					"Content-type": "application/json",
+					Authorization: `Bearer ${token}`,
+				},
+			};
+
+			const { data } = await axios.patch(
+				`/api/orders/${id}/deliver`,
+				{},
+				config
+			);
+
+			data && dispatch(setOrderPaySuccess(true));
+		} catch (error) {
+			console.error(error);
+			dispatch(
+				setOrderPayFailed(
+					error?.response?.data?.message
+						? error.response.data.message
+						: error.message
+				)
+			);
+		}
+	};
 
 export const resetOrder = () => (dispatch) => {
 	dispatch(setOrderReset());

@@ -3,11 +3,12 @@ import axios from "axios";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { PayPalButton } from "react-paypal-button-v2";
-import { Row, Col, ListGroup, Image, Card } from "react-bootstrap";
+import { Row, Col, ListGroup, Image, Card, Button } from "react-bootstrap";
 import Message from "../../components/Message/Message";
 import Loader from "../../components/Loader/Loader";
 import {
 	getOrder,
+	markOrderAsDelivered,
 	resetOrder,
 	updateOrderToPaid,
 } from "../../store/slices/order.slice";
@@ -16,7 +17,7 @@ const Order = ({ history, match }) => {
 	const [sdkReady, setSdkReady] = useState(false);
 	const dispatch = useDispatch();
 	const {
-		authReducer: { authenticated },
+		authReducer: { authenticated, userInfo },
 		orderReducer: {
 			order,
 			orderDetailsFailed,
@@ -61,8 +62,11 @@ const Order = ({ history, match }) => {
 	}, []);
 
 	const onPaymentSuccess = (paymentResult) => {
-		console.log(paymentResult);
 		dispatch(updateOrderToPaid(match?.params?.id, paymentResult));
+	};
+
+	const markasDelivered = () => {
+		order?._id && dispatch(markOrderAsDelivered(order?._id));
 	};
 
 	return (
@@ -190,6 +194,18 @@ const Order = ({ history, match }) => {
 													onSuccess={onPaymentSuccess}
 												/>
 											)}
+										</ListGroup.Item>
+									)}
+									{userInfo?.isAdmin && order?.isPaid && !order?.isDelivered && (
+										<ListGroup.Item>
+											<Button
+												disabled={loading}
+												onClick={markasDelivered}
+												type="button"
+												className="btn btn-block"
+											>
+												Mark As Delivered
+											</Button>
 										</ListGroup.Item>
 									)}
 								</ListGroup>
