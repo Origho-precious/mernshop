@@ -80,3 +80,50 @@ export const editProduct = asyncHandler(async (req, res) => {
 		throw new Error("Can't update product with null");
 	}
 });
+
+// @desc Create new Review
+// @route POST /api/products/:id/review
+// @access Private
+export const createProductReview = asyncHandler(async (req, res) => {
+	const { rating, comment } = req.body;
+
+	if (req.body) {
+		const product = await Product.findById(req.params.id);
+
+		if (product) {
+			const alreadyExists = product.reviews.find(
+				(review) => review?.user.toString() === req.user._id.toString()
+			);
+
+			if (alreadyExists) {
+				res.status(400);
+				throw new Error("User already reviewed this product");
+			} else {
+				const review = {
+					name: req.user.name,
+					rating: Number(rating),
+					comment,
+					user: req.user._id,
+				};
+
+				product.reviews.push(review);
+				product.numReviews = product.reviews.length;
+				product.rating =
+					product.reviews.reduce((acc, item) => item.rating + acc, 0) /
+					product.reviews.length;
+
+				await product.save();
+
+				res.status(201).json({ message: "Review added successfully!" });
+			}
+
+			res.status(200).json(newProduct);
+		} else {
+			res.status(404);
+			throw new Error("Product not found");
+		}
+	} else {
+		res.status(422);
+		throw new Error("Can't update product with null");
+	}
+});
