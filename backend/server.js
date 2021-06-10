@@ -1,3 +1,4 @@
+import path from "path";
 import express from "express";
 import dotenv from "dotenv";
 import colors from "colors";
@@ -16,6 +17,7 @@ const app = express();
 
 app.use(express.json());
 
+const __dirname = path.resolve();
 app.use("/uploads", express.static(path.join(__dirname, "/uploads")));
 
 app.get("/", (req, res) => {
