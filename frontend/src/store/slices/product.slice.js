@@ -11,6 +11,7 @@ const productSlice = createSlice({
 		productUpdateSuccess: false,
 		productUpdateError: null,
 		reviewError: null,
+		newProduct: null,
 	},
 	reducers: {
 		setIsLoading: (state) => {
@@ -27,20 +28,20 @@ const productSlice = createSlice({
 		},
 		setCreateProductSuccess: (state, { payload }) => {
 			state.loading = false;
-			state.product = payload;
+			state.newProduct = payload;
 		},
 		setResetState: (state) => {
 			state.loading = false;
-			state.product = null;
+			state.newProduct = null;
 			state.productUpdateSuccess = false;
 		},
 		setCreateProductFailed: (state) => {
 			state.loading = false;
-			state.product = null;
+			state.newProduct = null;
 		},
 		setProductUpdateSuccess: (state) => {
 			state.loading = false;
-			state.product = null;
+			state.newProduct = null;
 			state.productUpdateSuccess = true;
 			state.productUpdateError = false;
 		},

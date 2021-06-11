@@ -14,7 +14,7 @@ import Rating from "../../components/Rating/Rating";
 import {
 	getProductDetails,
 	reviewProduct,
-	resetSelectedProduct
+	resetSelectedProduct,
 } from "../../store/slices/product.slice";
 import Loader from "../../components/Loader/Loader";
 import Message from "../../components/Message/Message";
@@ -31,11 +31,13 @@ const Productpage = ({ match, history }) => {
 
 	useEffect(() => {
 		dispatch(getProductDetails(match?.params?.id));
+	}, [dispatch, match]);
 
+	useEffect(() => {
 		return () => {
 			dispatch(resetSelectedProduct());
-		}
-	}, [dispatch, match]);
+		};
+	}, [dispatch]);
 
 	const addToCart = () => {
 		history.push(`/cart/${match?.params?.id}?qty=${qty}`);
@@ -62,7 +64,7 @@ const Productpage = ({ match, history }) => {
 				className="btn btn-light my-3"
 				onClick={() => {
 					dispatch(resetSelectedProduct());
-					history.push("/admin/productlist");
+					history.push("/");
 				}}
 			>
 				Go Back
