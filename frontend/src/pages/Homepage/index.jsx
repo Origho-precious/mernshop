@@ -6,15 +6,16 @@ import { getProductList } from "../../store/slices/products.slice";
 import Loader from "../../components/Loader/Loader";
 import Message from "../../components/Message/Message";
 
-const HomePage = () => {
+const HomePage = ({ match }) => {
+	const keyword = match.params.keyword
 	const dispatch = useDispatch();
 	const { products, loading, error } = useSelector(
 		(state) => state.productListReducer
 	);
 
 	useEffect(() => {
-		dispatch(getProductList());
-	}, [dispatch]);
+		dispatch(getProductList(keyword));
+	}, [dispatch, keyword]);
 
 	return (
 		<>

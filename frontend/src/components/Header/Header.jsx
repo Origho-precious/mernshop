@@ -1,9 +1,12 @@
 import { useSelector, useDispatch } from "react-redux";
+import { useHistory } from "react-router-dom";
 import { LinkContainer } from "react-router-bootstrap";
 import { Container, Navbar, Nav, NavDropdown } from "react-bootstrap";
 import { logout } from "../../store/slices/auth.slice";
+import SearchBox from "../SearchBox/SearchBox";
 
 const Header = () => {
+	const history = useHistory();
 	const dispatch = useDispatch();
 	const { authenticated, userInfo } = useSelector((state) => state.authReducer);
 
@@ -15,6 +18,7 @@ const Header = () => {
 						<Navbar.Brand>ProShop</Navbar.Brand>
 					</LinkContainer>
 					<Navbar.Toggle aria-controls="basic-navbar-nav" />
+					<SearchBox history={history} />
 					<Navbar.Collapse id="basic-navbar-nav">
 						<Nav className="ml-auto">
 							<LinkContainer to="/cart">
@@ -39,7 +43,7 @@ const Header = () => {
 								</LinkContainer>
 							)}
 							{userInfo?.isAdmin && (
-								<NavDropdown title='Admin' id="adminmenu">
+								<NavDropdown title="Admin" id="adminmenu">
 									<LinkContainer to="/admin/users">
 										<NavDropdown.Item>Users</NavDropdown.Item>
 									</LinkContainer>
@@ -49,9 +53,6 @@ const Header = () => {
 									<LinkContainer to="/admin/orderlist">
 										<NavDropdown.Item>Orders</NavDropdown.Item>
 									</LinkContainer>
-									<NavDropdown.Item onClick={() => dispatch(logout())}>
-										Logout
-									</NavDropdown.Item>
 								</NavDropdown>
 							)}
 						</Nav>

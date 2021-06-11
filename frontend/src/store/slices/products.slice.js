@@ -45,22 +45,24 @@ const {
 	setDeleteProductSuccess,
 } = productsSlice.actions;
 
-export const getProductList = () => async (dispatch) => {
-	try {
-		dispatch(setIsLoading());
+export const getProductList =
+	(keyword = "") =>
+	async (dispatch) => {
+		try {
+			dispatch(setIsLoading());
 
-		const { data } = await axios.get("/api/products");
-		dispatch(setProductListSuccess(data));
-	} catch (error) {
-		dispatch(
-			setProductListFail(
-				error?.response?.data?.message
-					? error.response.data.message
-					: error.message
-			)
-		);
-	}
-};
+			const { data } = await axios.get(`/api/products?keyword=${keyword}`);
+			dispatch(setProductListSuccess(data));
+		} catch (error) {
+			dispatch(
+				setProductListFail(
+					error?.response?.data?.message
+						? error.response.data.message
+						: error.message
+				)
+			);
+		}
+	};
 
 export const deleteProduct = (id) => async (dispatch, getState) => {
 	const token = getState().authReducer?.userInfo?.token;
