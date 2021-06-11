@@ -31,6 +31,10 @@ const Productpage = ({ match, history }) => {
 
 	useEffect(() => {
 		dispatch(getProductDetails(match?.params?.id));
+
+		return () => {
+			dispatch(resetSelectedProduct());
+		}
 	}, [dispatch, match]);
 
 	const addToCart = () => {
