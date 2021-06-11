@@ -46,12 +46,14 @@ const {
 } = productsSlice.actions;
 
 export const getProductList =
-	(keyword = "") =>
+	(keyword = "", pageNum = 1) =>
 	async (dispatch) => {
 		try {
 			dispatch(setIsLoading());
 
-			const { data } = await axios.get(`/api/products?keyword=${keyword}`);
+			const { data } = await axios.get(
+				`/api/products?keyword=${keyword}&pageNumber=${pageNum}`
+			);
 			dispatch(setProductListSuccess(data));
 		} catch (error) {
 			dispatch(
