@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 import { Col, Row } from "react-bootstrap";
 import Product from "../../components/Product/Product";
 import { getProductList } from "../../store/slices/products.slice";
@@ -22,7 +23,13 @@ const HomePage = ({ match }) => {
 
 	return (
 		<>
-			{!keyword && <ProductCarousel />}
+			{!keyword ? (
+				<ProductCarousel />
+			) : (
+				<Link className="btn btn-light my-3" to="/">
+					Go Back
+				</Link>
+			)}
 			<h1 className="mt-3 mb-4">Latest Products</h1>
 			{loading ? (
 				<Loader />

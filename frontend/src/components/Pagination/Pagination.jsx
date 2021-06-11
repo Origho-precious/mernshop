@@ -20,13 +20,6 @@ const Paginate = ({
 						type="button"
 						onClick={() => setPageNum(x + 1)}
 						className="btn btn-light"
-						// to={
-						// 	!isAdmin
-						// 		? keyword
-						// 			? `/search/${keyword}/page/${x + 1}`
-						// 			: `/page/${x + 1}`
-						// 		: `/admin/productlist/${x + 1}`
-						// }
 					>
 						<Pagination.Item active={x + 1 === page}>{x + 1}</Pagination.Item>
 					</Button>
