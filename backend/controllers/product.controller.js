@@ -144,3 +144,14 @@ export const createProductReview = asyncHandler(async (req, res) => {
 		throw new Error("Can't update product with null");
 	}
 });
+
+// @desc Fetch Top Rated Products
+// @route GET /api/products/topRated
+// @access Public
+export const getTopRatedProducts = asyncHandler(async (req, res) => {
+	const topRatedProducts = await Product.find({ rating: { $gte: 4 } })
+		.sort({ rating: -1 })
+		.limit(3);
+
+	res.status(200).json(topRatedProducts);
+});
