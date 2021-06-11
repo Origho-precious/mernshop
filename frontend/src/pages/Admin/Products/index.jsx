@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { LinkContainer } from "react-router-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { Table, Button, Row, Col } from "react-bootstrap";
@@ -9,9 +9,11 @@ import {
 	deleteProduct,
 } from "../../../store/slices/products.slice";
 import { createProduct } from "../../../store/slices/product.slice";
+import Paginate from "../../../components/Pagination/Pagination";
 
 const AllProducts = ({ history }) => {
 	const dispatch = useDispatch();
+	const [pageNum, setPageNum] = useState(1);
 	const {
 		authReducer: { authenticated, userInfo },
 		productListReducer: {
@@ -29,8 +31,8 @@ const AllProducts = ({ history }) => {
 			? history.push("/login")
 			: !userInfo.isAdmin
 			? history.push("/")
-			: dispatch(getProductList());
-	}, [authenticated, dispatch, history, userInfo]);
+			: dispatch(getProductList("", pageNum));
+	}, [authenticated, dispatch, history, pageNum, userInfo]);
 
 	const deleteHandler = (id, name) => {
 		if (id) {
@@ -45,8 +47,7 @@ const AllProducts = ({ history }) => {
 	}, [deleteProductSuccess, dispatch]);
 
 	useEffect(() => {
-		product?.name &&
-			history.push(`/admin/product/${product?._id}/edit`);
+		product?.name && history.push(`/admin/product/${product?._id}/edit`);
 	}, [product, dispatch, history]);
 
 	return (
@@ -82,8 +83,8 @@ const AllProducts = ({ history }) => {
 						</tr>
 					</thead>
 					<tbody>
-						{products?.length ? (
-							products?.map((product) => (
+						{products?.products?.length ? (
+							products?.products?.map((product) => (
 								<tr key={product?._id}>
 									<td>{product?._id}</td>
 									<td>{product?.name}</td>
@@ -112,6 +113,11 @@ const AllProducts = ({ history }) => {
 					</tbody>
 				</Table>
 			)}
+			<Paginate
+				page={products?.page}
+				pages={products?.pages}
+				setPageNum={setPageNum}
+			/>
 		</>
 	);
 };
