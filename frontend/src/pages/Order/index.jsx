@@ -47,10 +47,11 @@ const Order = ({ history, match }) => {
 	}, [authenticated, history, match]);
 
 	useEffect(() => {
-		if (match?.params?.id && !order) {
-			dispatch(getOrder(match.params.id));
-		}
+		match?.params?.id && dispatch(getOrder(match.params.id));
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
 
+	useEffect(() => {
 		if (orderPaySuccess) {
 			dispatch(resetOrder());
 			dispatch(getOrder(match?.params?.id));
