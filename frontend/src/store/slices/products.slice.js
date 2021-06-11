@@ -9,6 +9,7 @@ const productsSlice = createSlice({
 		error: null,
 		deleteProductSuccess: null,
 		deleteProductError: null,
+		topRatedProducts: [],
 	},
 	reducers: {
 		setIsLoading: (state) => {
@@ -34,6 +35,10 @@ const productsSlice = createSlice({
 			state.deleteProductSuccess = null;
 			state.deleteProductError = true;
 		},
+		setTopRatedProducts: (state, { payload }) => {
+			state.loading = false;
+			state.topRatedProducts = payload;
+		},
 	},
 });
 
@@ -43,6 +48,7 @@ const {
 	setProductListSuccess,
 	setDeleteProductFailed,
 	setDeleteProductSuccess,
+	setTopRatedProducts,
 } = productsSlice.actions;
 
 export const getProductList =
@@ -89,6 +95,17 @@ export const deleteProduct = (id) => async (dispatch, getState) => {
 					: error.message
 			)
 		);
+	}
+};
+
+export const getTopRatedProducts = () => async (dispatch) => {
+	try {
+		dispatch(setIsLoading());
+
+		const { data } = await axios.get(`/api/products/topRated`);
+		dispatch(setTopRatedProducts(data));
+	} catch (error) {
+		console.log(error);
 	}
 };
 
