@@ -143,7 +143,7 @@ export const fetchProfile = () => async (dispatch, getState) => {
 	}
 };
 
-export const updateProfile = (user) => async (dispatch, getState) => {
+export const updateProfile = (user, callback) => async (dispatch, getState) => {
 	const token = getState().authReducer?.userInfo?.token;
 
 	try {
@@ -163,6 +163,7 @@ export const updateProfile = (user) => async (dispatch, getState) => {
 		);
 
 		data && dispatch(setUpdateProfileSuccess());
+		callback()
 	} catch (error) {
 		console.error(error);
 		dispatch(

@@ -31,7 +31,7 @@ const Profile = ({ history }) => {
 	useEffect(() => {
 		!profile && dispatch(fetchProfile());
 		!myOrders?.length && dispatch(getMyOrders());
-	// eslint-disable-next-line react-hooks/exhaustive-deps
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
 	useEffect(() => {
@@ -45,8 +45,11 @@ const Profile = ({ history }) => {
 		if (password !== confirmPassword) {
 			setMessage("Passwords do not match");
 		} else {
-			console.log(name, email, password);
-			dispatch(updateProfile({ name, email, password }));
+			dispatch(
+				updateProfile({ name, email, password }, () => {
+					window?.location?.reload();
+				})
+			);
 		}
 	};
 
