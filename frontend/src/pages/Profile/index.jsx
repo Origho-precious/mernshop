@@ -29,11 +29,16 @@ const Profile = ({ history }) => {
 	const [message, setMessage] = useState(null);
 
 	useEffect(() => {
+		!profile && dispatch(fetchProfile());
+		!myOrders?.length && dispatch(getMyOrders());
+	// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
+
+	useEffect(() => {
 		!authenticated && history.push("/login");
-		!profile?.name && dispatch(fetchProfile());
 		profile?.name && setName(profile?.name);
 		profile?.email && setEmail(profile?.email);
-	}, [history, authenticated, profile?.name, dispatch, profile?.email]);
+	}, [history, authenticated, dispatch, profile, myOrders]);
 
 	const handleSubmit = (e) => {
 		e.preventDefault();
@@ -44,10 +49,6 @@ const Profile = ({ history }) => {
 			dispatch(updateProfile({ name, email, password }));
 		}
 	};
-
-	useEffect(() => {
-		!myOrders?.length && dispatch(getMyOrders());
-	}, [dispatch, myOrders]);
 
 	return (
 		<Row>
