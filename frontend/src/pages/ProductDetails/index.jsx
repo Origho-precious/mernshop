@@ -14,6 +14,7 @@ import Rating from "../../components/Rating/Rating";
 import {
 	getProductDetails,
 	reviewProduct,
+	resetSelectedProduct
 } from "../../store/slices/product.slice";
 import Loader from "../../components/Loader/Loader";
 import Message from "../../components/Message/Message";
@@ -53,9 +54,15 @@ const Productpage = ({ match, history }) => {
 
 	return (
 		<>
-			<Link to="/" className="btn btn-light my-3">
-				Go back
-			</Link>
+			<Button
+				className="btn btn-light my-3"
+				onClick={() => {
+					dispatch(resetSelectedProduct());
+					history.push("/admin/productlist");
+				}}
+			>
+				Go Back
+			</Button>
 			{loading ? (
 				<Loader />
 			) : error ? (
