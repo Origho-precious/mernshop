@@ -47,7 +47,7 @@ const AllProducts = ({ history }) => {
 	}, [deleteProductSuccess, dispatch]);
 
 	useEffect(() => {
-		newProduct?.name && history.push(`/admin/newProduct/${newProduct?._id}/edit`);
+		newProduct?.name && history.push(`/admin/product/${newProduct?._id}/edit`);
 	}, [newProduct, dispatch, history]);
 
 	return (

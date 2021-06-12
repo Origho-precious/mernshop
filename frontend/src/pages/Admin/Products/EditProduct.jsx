@@ -23,7 +23,6 @@ const EditUser = ({ match, history }) => {
 			productUpdateError: error,
 		},
 	} = useSelector((state) => state);
-
 	const [name, setName] = useState("");
 	const [price, setPrice] = useState(0);
 	const [image, setImage] = useState("");
@@ -33,6 +32,7 @@ const EditUser = ({ match, history }) => {
 	const [description, setDescription] = useState("");
 	const [canSubmitForm, setCanSubmitForm] = useState(false);
 	const [uploading, setUploading] = useState(false);
+	const [errorMsg, setErrorMsg] = useState("");
 
 	useEffect(() => {
 		!authenticated && history.push("/login");
@@ -96,26 +96,41 @@ const EditUser = ({ match, history }) => {
 
 	const fileUploader = async (e) => {
 		const file = e.target.files[0];
-		const formData = new FormData();
+		const reader = new FileReader();
 
-		formData.append("image", file);
+		reader.readAsDataURL(file);
 
-		setUploading(true);
+		reader.onloadend = () => {
+			upload(reader.result);
+		};
 
-		try {
-			const config = {
-				headers: {
-					"Content-type": "multipart/form-data",
-				},
-			};
+		const upload = async (image) => {
+			console.log(111);
 
-			const { data } = await axios.post("/api/upload", formData, config);
-			setImage(data);
-			setUploading(false);
-		} catch (error) {
-			console.error(error);
-			setUploading(false);
-		}
+			if (image) {
+				setUploading(true);
+
+				try {
+					const config = {
+						headers: {
+							"Content-Type": "application/json",
+						},
+					};
+
+					const { data } = await axios.post(
+						"/api/upload",
+						JSON.stringify({ image: image }),
+						config
+					);
+					setUploading(false);
+					setImage(data);
+					setErrorMsg("");
+				} catch (error) {
+					setErrorMsg("Image upload failed");
+					setUploading(false);
+				}
+			}
+		};
 	};
 
 	return (
@@ -170,7 +185,11 @@ const EditUser = ({ match, history }) => {
 								custom
 								onChange={fileUploader}
 							/>
-							{uploading && <Loader />}
+							{uploading ? (
+								<Loader />
+							) : (
+								errorMsg && <Message variant="danger">{errorMsg}</Message>
+							)}
 						</Form.Group>
 
 						<Form.Group controlId="brand">
