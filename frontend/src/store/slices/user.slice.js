@@ -1,5 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
+import { setProfile } from "./auth.slice";
 
 const userSlice = createSlice({
 	name: "user",
@@ -143,7 +144,7 @@ export const fetchProfile = () => async (dispatch, getState) => {
 	}
 };
 
-export const updateProfile = (user, callback) => async (dispatch, getState) => {
+export const updateProfile = (user) => async (dispatch, getState) => {
 	const token = getState().authReducer?.userInfo?.token;
 
 	try {
@@ -162,8 +163,8 @@ export const updateProfile = (user, callback) => async (dispatch, getState) => {
 			config
 		);
 
-		data && dispatch(setUpdateProfileSuccess());
-		callback()
+		dispatch(setUpdateProfileSuccess());
+		dispatch(setProfile(data));
 	} catch (error) {
 		console.error(error);
 		dispatch(

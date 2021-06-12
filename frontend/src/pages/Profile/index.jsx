@@ -14,7 +14,6 @@ const Profile = ({ history }) => {
 	const dispatch = useDispatch();
 	const {
 		userProfileError,
-		updateSuccess,
 		loading,
 		profile,
 		updateProfileError,
@@ -30,7 +29,7 @@ const Profile = ({ history }) => {
 
 	useEffect(() => {
 		!profile && dispatch(fetchProfile());
-		!myOrders?.length && dispatch(getMyOrders());
+		!myOrders && dispatch(getMyOrders());
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
@@ -58,7 +57,6 @@ const Profile = ({ history }) => {
 			<Col md={3}>
 				<h2>User Profile</h2>
 				{loading && <Loader />}
-				{updateSuccess && <Message variant="success">Profile Updated</Message>}
 				{updateProfileError && (
 					<Message variant="danger">{updateProfileError}</Message>
 				)}

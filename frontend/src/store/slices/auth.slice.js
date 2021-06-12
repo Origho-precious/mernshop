@@ -27,7 +27,7 @@ const authSlice = createSlice({
 			state.userInfo = null;
 		},
 		setUserProfile: (state, { payload }) => {
-			state.profile = payload;
+			state.userInfo = { ...state.userInfo, name: payload?.name };
 		},
 		setLogout: (state) => {
 			state.authenticated = false;
@@ -48,7 +48,7 @@ const authSlice = createSlice({
 });
 
 const {
-	// setUserProfile,
+	setUserProfile,
 	setAuthenticating,
 	setLoginFailed,
 	setLoginSuccess,
@@ -56,6 +56,10 @@ const {
 	setSignupFailed,
 	setSignupSuccess,
 } = authSlice.actions;
+
+export const setProfile = (payload) => (dispatch) => {
+	dispatch(setUserProfile(payload));
+};
 
 export const login = (email, password) => async (dispatch) => {
 	try {

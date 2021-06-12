@@ -9,7 +9,6 @@ const Header = () => {
 	const history = useHistory();
 	const dispatch = useDispatch();
 	const { authenticated, userInfo } = useSelector((state) => state.authReducer);
-	const { profile } = useSelector((state) => state.userReducer);
 
 	return (
 		<header>
@@ -28,7 +27,7 @@ const Header = () => {
 								</Nav.Link>
 							</LinkContainer>
 							{authenticated ? (
-								<NavDropdown title={profile?.name} id="username">
+								<NavDropdown title={userInfo?.name} id="username">
 									<LinkContainer to="/profile">
 										<NavDropdown.Item>Profile</NavDropdown.Item>
 									</LinkContainer>
