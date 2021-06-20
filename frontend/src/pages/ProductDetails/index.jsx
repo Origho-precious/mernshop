@@ -58,6 +58,10 @@ const Productpage = ({ match, history }) => {
 		dispatch(reviewProduct(product?._id, { rating, comment }));
 	};
 
+	const findUserReview = () => {
+		return product?.reviews?.find((review) => review?.user === userInfo?._id);
+	};
+
 	return (
 		<>
 			<Button
@@ -92,7 +96,7 @@ const Productpage = ({ match, history }) => {
 								</ListGroup.Item>
 								<ListGroup.Item>Price: ${product?.price}</ListGroup.Item>
 								<ListGroup.Item>
-									Description: ${product?.description}
+									Description: {product?.description}
 								</ListGroup.Item>
 							</ListGroup>
 						</Col>
@@ -157,7 +161,7 @@ const Productpage = ({ match, history }) => {
 						<Col md={6}>
 							<h2>Reviews</h2>
 							{product?.reviews?.length === 0 && <Message>No Review</Message>}
-							{reviewError && <Message>{reviewError}</Message>}
+							{reviewError && <Message>Something went wrong, please refresh and try again</Message>}
 							<ListGroup variant="flush">
 								{product?.reviews?.map((review) => (
 									<ListGroup.Item key={review?._id}>
@@ -168,10 +172,7 @@ const Productpage = ({ match, history }) => {
 									</ListGroup.Item>
 								))}
 								<ListGroup.Item>
-									{userInfo &&
-									product?.reviews.find(
-										(review) => review?.user === userInfo?._id
-									) ? (
+									{userInfo && findUserReview() ? (
 										<Message>You've reviewed this product previously!</Message>
 									) : (
 										<>
@@ -204,7 +205,7 @@ const Productpage = ({ match, history }) => {
 														/>
 													</Form.Group>
 													<Button
-														disabled={loading}
+														disabled={loading || !comment || !rating}
 														type="submit"
 														variant="primary"
 													>
